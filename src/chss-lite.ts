@@ -1,3 +1,7 @@
+import { mount } from "../../../litState/lib";
+import { App } from "./components/app/App";
+
 import "./main.scss";
 
-console.log("hello world");
+const container = document.getElementById("app-container");
+if (container) mount(App(), container);
