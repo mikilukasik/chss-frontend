@@ -62,7 +62,7 @@ body {
   margin-right: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1041px) {
   .wrapper {
     grid-template-columns: 200px 1fr;
     grid-template-rows: auto 1fr;
@@ -84,7 +84,7 @@ body {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1040px) {
   .hamburger {
     display: block;
   }
