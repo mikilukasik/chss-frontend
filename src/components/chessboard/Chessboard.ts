@@ -3,7 +3,7 @@ import "./chessboard.scss";
 import { BoardSquare } from "./BoardSquare";
 
 const chessboardState = createState({
-  fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  fen: "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1",
 });
 
 export const Chessboard = component(

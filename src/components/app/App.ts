@@ -37,7 +37,11 @@ export const App = component(
     <div class="wrapper">
       <div class="header">
         <div class="hamburger" onclick="${handler(() => toggleLeftBar())}">
-          &#9776;
+          <img
+            class="hamburger-svg"
+            src="assets/svg/download.svg"
+            alt="Toggle left menu bar"
+          />
         </div>
         ${HeaderNav()}
       </div>
