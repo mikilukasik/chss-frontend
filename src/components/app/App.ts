@@ -11,7 +11,7 @@ import { Home } from "../home/Home";
 import "./app.scss";
 
 const routes = {
-  "/": Home,
+  "/": Game,
   "/game": Game,
   "*": () => html`<h1>404 Not Found</h1>`,
 };
