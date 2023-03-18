@@ -47,6 +47,7 @@ body {
   -webkit-transform: translateX(-100%);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
+  width: 200px;
 
   &.open {
     display: block;
@@ -58,7 +59,7 @@ body {
 .main {
   grid-area: main;
   padding: 1rem;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .hamburger {
@@ -73,7 +74,7 @@ body {
   height: 1.5rem
 }
 
-@media (min-width: 1041px) {
+@media (min-width: 1200px) {
   .wrapper {
     grid-template-columns: 200px 1fr;
     grid-template-rows: auto 1fr;
@@ -85,7 +86,6 @@ body {
   .left-bar {
     display: block;
     position: fixed;
-    width: auto;
     bottom:0;
     transform: translateX(0);
   }
@@ -95,7 +95,7 @@ body {
   }
 }
 
-@media (max-width: 1040px) {
+@media (max-width: 1200px) {
   .hamburger {
     display: block;
   }

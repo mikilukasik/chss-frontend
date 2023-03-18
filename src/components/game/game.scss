@@ -1,0 +1,29 @@
+.game-wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+}
+
+.chessboard-wrapper {
+  grid-column: 1 / 1;
+  grid-row: 1 / 2;
+}
+
+.right-panel {
+  grid-column: 1 / 1;
+  grid-row: 2 / 2;
+  background-color: red;
+}
+
+@media (min-width: 1040px) {
+  .chessboard-wrapper {
+    grid-column: 1 / 2;
+    grid-row: 1 / 1;
+  }
+
+  .right-panel {
+    grid-column: 2 / 2;
+    grid-row: 1 / 1;
+  }
+}

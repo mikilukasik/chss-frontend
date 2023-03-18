@@ -1,8 +1,12 @@
 import { component, html } from "../../../../../litState/lib";
 import { Chessboard } from "../chessboard/Chessboard";
+import "./game.scss";
 
 export const Game = component(
-  () =>
-    html`<div>Game</div>
-      <div>${Chessboard()}</div>`
+  () => html`
+    <div class="game-wrapper">
+      <div class="chessboard-wrapper">${Chessboard()}</div>
+      <div class="right-panel">this is the right panel</div>
+    </div>
+  `
 );
