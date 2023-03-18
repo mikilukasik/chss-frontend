@@ -1,14 +1,40 @@
 import { createState, component, html } from "../../../../../litState/lib";
 import "./chessboard.scss";
 import { BoardSquare } from "./BoardSquare";
+import { animateBoardChanges } from "./helpers/animateBoardChanges";
 
 const chessboardState = createState({
-  fen: "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1",
+  fen: "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12",
+  prevFen: "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12",
 });
+
+setInterval(() => {
+  chessboardState.fen =
+    chessboardState.fen ===
+    "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12"
+      ? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+      : "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12";
+}, 3000);
+setTimeout(() => {
+  chessboardState.fen =
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+}, 1000);
 
 export const Chessboard = component(
   () => {
-    const pureFen = chessboardState.fen.split(" ")[0].split("/").join("");
+    if (chessboardState.prevFen !== chessboardState.fen) {
+      animateBoardChanges(
+        chessboardState.prevFen,
+        chessboardState.fen,
+        0.5
+      ).then(() => {
+        console.log("animation finished");
+        chessboardState.prevFen = chessboardState.fen;
+      });
+
+      return document.querySelector(".board-container")?.innerHTML || "";
+    }
+    const pureFen = chessboardState.prevFen.split(" ")[0].split("/").join("");
     let boardContent = "";
 
     let col = 0;
