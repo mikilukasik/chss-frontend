@@ -1,4 +1,9 @@
-import { createState, component, html, mount } from "../../../litState/lib";
+import {
+  createState,
+  component,
+  html,
+  mount,
+} from "../../../../../litState/lib";
 import "./chessboard.scss";
 
 const state = createState({
