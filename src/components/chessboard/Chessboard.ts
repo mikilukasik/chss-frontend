@@ -4,21 +4,9 @@ import { BoardCell } from "./BoardCell";
 import { animateBoardChanges } from "./helpers/animateBoardChanges";
 
 const chessboardState = createState({
-  fen: "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12",
-  prevFen: "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12",
+  fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  prevFen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 });
-
-setInterval(() => {
-  chessboardState.fen =
-    chessboardState.fen ===
-    "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12"
-      ? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-      : "3rkb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQK2R w KQkq - 0 12";
-}, 3000);
-setTimeout(() => {
-  chessboardState.fen =
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-}, 1000);
 
 export const Chessboard = component(
   () => {
@@ -56,3 +44,11 @@ export const Chessboard = component(
     class: "board-container",
   }
 );
+
+setInterval(() => {
+  chessboardState.fen =
+    chessboardState.fen ===
+    "3rKb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQR2k w KQkq - 0 12"
+      ? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+      : "3rKb1r/1pp2pp1/p1n5/3Pp3/3P4/8/PPP2PPP/R1BQR2k w KQkq - 0 12";
+}, 2000);
