@@ -1,4 +1,5 @@
-import { createState } from "../../../../../litState/lib";
+import { addListener, createState } from "../../../../../litState/lib";
+import { animateBoardChanges } from "./helpers/animateBoardChanges";
 
 export const chessboardState = createState({
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -8,4 +9,12 @@ export const chessboardState = createState({
   fen: string;
   prevFen: string;
   selectedCell: string | null;
+});
+
+addListener(() => {
+  if (chessboardState.prevFen !== chessboardState.fen) {
+    animateBoardChanges().then(
+      () => (chessboardState.prevFen = chessboardState.fen)
+    );
+  }
 });

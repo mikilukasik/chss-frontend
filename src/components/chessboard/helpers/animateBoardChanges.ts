@@ -1,17 +1,16 @@
 import { getFenDiff } from "../../../../chss-module-engine/src/engine_new/utils/getFenDiff";
 import { BoardCellContent } from "../../chessboardCell/BoardCell";
+import { chessboardState } from "../chessboardState";
 
 export const animateBoardChanges = async (
-  prevFen: string,
-  currFen: string,
   seconds: number = 0.5
 ): Promise<void> => {
   const board = document.querySelector(".board");
   if (!board) return;
 
   const { addedPieces, removedPieces, movedPieces } = getFenDiff(
-    prevFen,
-    currFen
+    chessboardState.prevFen,
+    chessboardState.fen
   );
   // Animate removed pieces
   removedPieces.forEach(({ square }) => {
