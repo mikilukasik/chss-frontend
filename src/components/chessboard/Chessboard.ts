@@ -28,7 +28,6 @@ export const Chessboard = component(
         chessboardState.fen,
         0.5
       ).then(() => {
-        console.log("animation finished");
         chessboardState.prevFen = chessboardState.fen;
       });
 
