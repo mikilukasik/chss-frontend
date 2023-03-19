@@ -1,6 +1,6 @@
 import { createState, component, html } from "../../../../../litState/lib";
 import "./chessboard.scss";
-import { BoardSquare } from "./BoardSquare";
+import { BoardCell } from "./BoardCell";
 import { animateBoardChanges } from "./helpers/animateBoardChanges";
 
 const chessboardState = createState({
@@ -39,13 +39,13 @@ export const Chessboard = component(
     let col = 0;
     for (const char of pureFen) {
       if (isNaN(parseInt(char))) {
-        boardContent += BoardSquare({ index: col, char });
+        boardContent += BoardCell({ index: col, char });
         col += 1;
         continue;
       }
 
       for (let j = 0; j < parseInt(char); j++) {
-        boardContent += BoardSquare({ index: col });
+        boardContent += BoardCell({ index: col });
         col += 1;
       }
     }

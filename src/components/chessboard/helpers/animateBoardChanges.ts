@@ -1,5 +1,5 @@
 import { getFenDiff } from "../../../../chss-module-engine/src/engine_new/utils/getFenDiff";
-import { BoardCellContent } from "../BoardSquare";
+import { BoardCellContent } from "../BoardCell";
 
 export const animateBoardChanges = async (
   prevFen: string,

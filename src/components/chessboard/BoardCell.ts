@@ -19,7 +19,7 @@ export const BoardCellContent = component(
   })
 );
 
-export const BoardSquare = component(
+export const BoardCell = component(
   ({ index, char }) => {
     const cellStr = cellIndex2cellStr(index);
     return html`<div

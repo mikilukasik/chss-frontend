@@ -7,23 +7,8 @@ import {
 import { Router } from "../../../../../litState/lib/components";
 import { routes } from "../../helpers/routes";
 import { HeaderNav } from "../headerNav/HeaderNav";
+import { LeftBar, toggleLeftBar } from "../leftBar/LeftBar";
 import "./app.scss";
-
-const state = createState({
-  leftBarClass: "closed",
-});
-
-const toggleLeftBar = () => {
-  state.leftBarClass = state.leftBarClass === "open" ? "closed" : "open";
-};
-
-const LeftBar = component(
-  () => html`
-    <div id="left-bar" class="left-bar ${state.leftBarClass}">
-      <p>Left bar content...</p>
-    </div>
-  `
-);
 
 export const App = component(
   () => html`
