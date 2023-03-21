@@ -10,6 +10,8 @@ import { HeaderNav } from "../headerNav/HeaderNav";
 import { LeftBar, toggleLeftBar } from "../leftBar/LeftBar";
 import "./app.scss";
 
+const hamburgerClickHandler = handler(() => toggleLeftBar()).trim();
+
 export const App = component(
   () => html`
     <div class="wrapper">
@@ -17,7 +19,7 @@ export const App = component(
         <div
           id="hamburger"
           class="hamburger"
-          onclick="${handler(() => toggleLeftBar())}"
+          onclick="${hamburgerClickHandler}"
         >
           <img
             class="hamburger-svg"
@@ -25,10 +27,10 @@ export const App = component(
             alt="Toggle left menu bar"
           />
         </div>
-        ${HeaderNav()}
+        ${HeaderNav("header-nav")}
       </div>
-      ${LeftBar()}
-      <div class="main">${Router({ routes })}</div>
+      ${LeftBar("left-bar")}
+      <div class="main">${Router("router", { routes })}</div>
     </div>
   `
 );

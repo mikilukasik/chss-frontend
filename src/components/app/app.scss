@@ -62,7 +62,7 @@ body {
 
 .main {
   grid-area: main;
-  padding: 1rem;
+  padding: 0 0;
   overflow-y: hidden;
   transition: grid-template-columns 0.3s, grid-template-rows 0.3s;
 }
@@ -99,6 +99,10 @@ body {
 
   .hamburger {
     display: none;
+  }
+
+  .main {
+    padding: 1rem ;
   }
 }
 

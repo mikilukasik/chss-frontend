@@ -27,3 +27,9 @@
     grid-row: 1 / 1;
   }
 }
+
+@media (min-width: 1040px) {
+  .chessboard-wrapper {
+    padding: 0 1rem;
+  }
+}

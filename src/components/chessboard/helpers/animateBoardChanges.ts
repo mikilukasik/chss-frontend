@@ -1,6 +1,6 @@
 import { getFenDiff } from "../../../../chss-module-engine/src/engine_new/utils/getFenDiff";
 import { BoardCellContent } from "../../chessboardCell/BoardCell";
-import { chessboardState } from "../chessboardState";
+import { chessboardState } from "./chessboardState";
 
 export const animateBoardChanges = async (
   seconds: number = 0.5
@@ -12,6 +12,7 @@ export const animateBoardChanges = async (
     chessboardState.prevFen,
     chessboardState.fen
   );
+
   // Animate removed pieces
   removedPieces.forEach(({ square }) => {
     const piece = board.querySelector(
@@ -21,9 +22,7 @@ export const animateBoardChanges = async (
     piece.style.transition = `transform ${seconds}s ease-in-out`;
     piece.style.transform = "scale(0)";
 
-    piece.addEventListener("transitionend", () => {
-      piece.remove();
-    });
+    piece.addEventListener("transitionend", () => {});
   });
 
   // Animate moved pieces
@@ -38,10 +37,7 @@ export const animateBoardChanges = async (
     pieceElement.style.transform = `translate(${translation.x}%, ${translation.y}%)`;
     pieceElement.style.transformOrigin = "0 0";
 
-    pieceElement.addEventListener("transitionend", () => {
-      pieceElement.style.animation = "";
-      pieceElement.style.transform = "";
-    });
+    pieceElement.addEventListener("transitionend", () => {});
   });
 
   function getSquarePosition(square: string) {
@@ -65,7 +61,13 @@ export const animateBoardChanges = async (
   // Animate added pieces
   addedPieces.forEach(({ piece, square }) => {
     const pieceElement = document.createElement("div");
-    pieceElement.innerHTML = BoardCellContent({ char: piece, cellStr: square });
+    pieceElement.innerHTML = BoardCellContent(
+      `board-cell-content-${square}-temp`,
+      {
+        char: piece,
+        cellStr: square,
+      }
+    );
     pieceElement.style.transform = "scale(0)";
 
     const container = document.getElementById(
@@ -77,11 +79,9 @@ export const animateBoardChanges = async (
       pieceElement.style.transition = `transform ${seconds}s ease-in-out`;
       pieceElement.style.transform = `scale(1)`;
 
-      pieceElement.addEventListener("transitionend", () => {
-        pieceElement.style.transition = "";
-      });
+      pieceElement.addEventListener("transitionend", () => {});
     }, 0);
   });
 
-  return new Promise((r) => setTimeout(r, seconds * 1010));
+  return new Promise((r) => setTimeout(r, seconds * 1000));
 };

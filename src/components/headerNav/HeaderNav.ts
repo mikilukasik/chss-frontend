@@ -4,6 +4,6 @@ import { Link } from "../../../../../litState/lib/components";
 export const HeaderNav = component(
   () =>
     html`<div class="header-nav">
-      Header ${Link({ to: "/game", children: "Game" })}
+      Header ${Link("nav-link-to-game", { to: "/game", children: "Game" })}
     </div>`
 );

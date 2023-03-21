@@ -41,10 +41,6 @@
     }
   }
 
-  .empty {
-    width: 0;
-    height: 0;
-  }
 }
 
 .white {
@@ -56,5 +52,9 @@
 }
 
 .selected {
-  background-color: rgba(255, 153, 0, 0.75);
+  background: radial-gradient(circle, rgba(251,154,63,1) 43%, rgba(0,0,0,0) 100%);
+}
+
+.highlighted {
+  background: radial-gradient(circle, rgba(251,154,63,1) 43%, rgba(0,0,0,0) 100%);
 }
