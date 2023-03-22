@@ -1,8 +1,13 @@
 import * as tf from "@tensorflow/tfjs";
+import { WorkerApi } from "../api/workerApi";
 
-console.log("im the worker");
+const workerClientApi = new WorkerApi();
+workerClientApi.on("test", (data) => ({ echoFromClient: data }));
 
-postMessage("this is the message to main");
+workerClientApi
+  .do("test", { workerToHost: "ok" })
+  .then(console.log)
+  .catch(console.error);
 
 (async () => {
   tf.loadLayersModel("tfjs_model/model.json");
