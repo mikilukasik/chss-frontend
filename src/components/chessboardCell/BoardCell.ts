@@ -8,10 +8,8 @@ import { CHSS } from "../../helpers/global";
 
 CHSS.handlers.cellClickHandler = (cellStr: string) => {
   if (chessboardState.selectedCell === cellStr) {
-    console.log("deselecting", cellStr);
     chessboardState.selectedCell = null;
   } else if (chessboardState.movableCells.includes(cellStr)) {
-    console.log("selecting", cellStr);
     chessboardState.selectedCell = cellStr;
   } else if (chessboardState.targetCells[cellStr]) {
     const move = chessboardState.selectedCell + cellStr;
@@ -30,7 +28,7 @@ export const BoardCellContent = component(
         />`
       : "";
   },
-  ({ cellStr, char }) => ({
+  ({ cellStr }) => ({
     class: `cell-svg-container${
       chessboardState.selectedCell === cellStr ? " selected" : ""
     }${chessboardState.targetCells[cellStr as string] ? " highlighted" : ""}`,

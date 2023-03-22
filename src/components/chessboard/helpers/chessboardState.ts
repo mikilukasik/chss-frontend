@@ -1,16 +1,35 @@
 import { addListener, createState } from "../../../../../../litState/lib";
-import { fen2intArray } from "../../../../chss-module-engine/src/engine_new/transformers/fen2intArray";
-import { move2moveString } from "../../../../chss-module-engine/src/engine_new/transformers/move2moveString";
-import { generateLegalMoves } from "../../../../chss-module-engine/src/engine_new/moveGenerators/generateLegalMoves";
-import { getMovedBoard } from "../../../../chss-module-engine/src/engine_new/utils/getMovedBoard";
-import { moveString2move } from "../../../../chss-module-engine/src/engine_new/transformers/moveString2move";
-import { board2fen } from "../../../../chss-module-engine/src/engine_new/transformers/board2fen";
 import { animateBoardChanges } from "./animateBoardChanges";
 
 const startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const startingMoves = [
+  "g1f3",
+  "g1h3",
+  "b1a3",
+  "b1c3",
+  "h2h3",
+  "h2h4",
+  "g2g3",
+  "g2g4",
+  "f2f3",
+  "f2f4",
+  "e2e3",
+  "e2e4",
+  "d2d3",
+  "d2d4",
+  "c2c3",
+  "c2c4",
+  "b2b3",
+  "b2b4",
+  "a2a3",
+  "a2a4",
+];
 
-const getNextMoves = (bitBoard: Int8Array) =>
-  Array.from(generateLegalMoves(bitBoard)).map(move2moveString);
+declare global {
+  interface Window {
+    CHSS: any;
+  }
+}
 
 const getMovableCells = (nextMoves: string[]) =>
   Object.keys(
@@ -20,29 +39,24 @@ const getMovableCells = (nextMoves: string[]) =>
     }, {} as { [key: string]: true })
   );
 
-const bitBoard = fen2intArray(startingFen);
-const nextMoves = getNextMoves(bitBoard);
-const movableCells = getMovableCells(nextMoves);
+const movableCells = getMovableCells(startingMoves);
 
 export const chessboardState = createState({
   fen: startingFen,
   prevFen: startingFen,
-  bitBoard,
-  nextMoves,
+  nextMoves: startingMoves,
   movableCells,
   targetCells: {} as Record<string, true>,
   chessBoardUpdating: false,
   selectedCell: null as string | null,
-  makeMove: ((a) => {}) as (fen: string) => void,
+  makeMove: (async (a) => {}) as (fen: string) => void,
 });
 
-chessboardState.makeMove = (moveString: string) => {
-  console.log("will move it");
-  const move = moveString2move(moveString);
-  const movedBoard = getMovedBoard(move, fen2intArray(chessboardState.fen));
-  const movedFen = board2fen(movedBoard);
-  console.log({ movedFen, movedBoard, move, b: chessboardState.bitBoard });
-  chessboardState.fen = movedFen;
+chessboardState.makeMove = async (moveString: string) => {
+  chessboardState.fen = await window.CHSS.mainWorker.do("getMovedFen", {
+    moveString,
+    fen: chessboardState.fen,
+  });
 };
 
 addListener(() => {
@@ -63,11 +77,14 @@ addListener(() => {
       });
     });
 
-    const bitBoard = fen2intArray(chessboardState.fen);
-    const nextMoves = getNextMoves(bitBoard);
-    const movableCells = getMovableCells(nextMoves);
-
-    Object.assign(chessboardState, { bitBoard, nextMoves, movableCells });
+    window.CHSS.mainWorker
+      .do("getNextMoves", {
+        fen: chessboardState.fen,
+      })
+      .then((nextMoves: string[]) => {
+        const movableCells = getMovableCells(nextMoves);
+        Object.assign(chessboardState, { nextMoves, movableCells });
+      });
   }
 }, "fen-update-listener");
 
