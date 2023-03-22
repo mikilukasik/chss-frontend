@@ -19,7 +19,7 @@ export const animateBoardChanges = async (
       `[data-square="${square}"]`
     ) as HTMLElement;
 
-    piece.style.transition = `transform ${seconds}s ease-in-out`;
+    piece.style.transition = `transform ${seconds}s ease-out`;
     piece.style.transform = "scale(0)";
 
     piece.addEventListener("transitionend", () => {});
@@ -33,7 +33,7 @@ export const animateBoardChanges = async (
     const translation = getTranslationValues(from, to);
 
     pieceElement.style.zIndex = "1";
-    pieceElement.style.transition = `transform ${seconds}s ease-in-out`;
+    pieceElement.style.transition = `transform ${seconds}s ease-out`;
     pieceElement.style.transform = `translate(${translation.x}%, ${translation.y}%)`;
     pieceElement.style.transformOrigin = "0 0";
 
@@ -76,7 +76,7 @@ export const animateBoardChanges = async (
 
     container.appendChild(pieceElement);
     setTimeout(() => {
-      pieceElement.style.transition = `transform ${seconds}s ease-in-out`;
+      pieceElement.style.transition = `transform ${seconds}s ease-out`;
       pieceElement.style.transform = `scale(1)`;
 
       pieceElement.addEventListener("transitionend", () => {});
