@@ -1,0 +1,39 @@
+name: Deploy to Production Branch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: "production"
+
+      - name: Merge main branch
+        run: |
+          git fetch origin main:main
+          git merge main --no-edit
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add docs
+          git commit -m "Build and update docs folder - these are static assets that get deployed to github pages"
+          git push
