@@ -4,10 +4,12 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = (env, argv) => {
   const { mode = "development" } = argv;
   let devtool = "inline-source-map";
+  let outPath = path.resolve(__dirname, "dist");
 
   if (mode === "production") {
     console.log("creating production build");
     devtool = false;
+    outPath = path.resolve(__dirname, "dist_prod");
   }
 
   const webpackConfig = [
@@ -33,7 +35,7 @@ module.exports = (env, argv) => {
       },
       output: {
         filename: "chss-lite.js",
-        path: path.resolve(__dirname, "dist"),
+        path: outPath,
       },
       plugins: [
         new CopyWebpackPlugin({
@@ -66,7 +68,7 @@ module.exports = (env, argv) => {
       },
       output: {
         filename: "main-worker-frame.js",
-        path: path.resolve(__dirname, "dist"),
+        path: outPath,
       },
       experiments: {
         topLevelAwait: true,
