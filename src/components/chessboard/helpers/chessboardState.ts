@@ -24,6 +24,8 @@ const startingMoves = [
   "a2a3",
   "a2a4",
 ];
+const startingLmf = new Array(64).fill(255);
+const startingLmt = startingLmf.slice();
 
 declare global {
   interface Window {
@@ -49,14 +51,20 @@ export const chessboardState = createState({
   targetCells: {} as Record<string, true>,
   chessBoardUpdating: false,
   selectedCell: null as string | null,
+  lmf: startingLmf,
+  lmt: startingLmt,
   makeMove: (async (a) => {}) as (fen: string) => void,
 });
 
 chessboardState.makeMove = async (moveString: string) => {
-  chessboardState.fen = await window.CHSS.mainWorker.do("getMovedFen", {
+  const { fen, lmf, lmt } = await window.CHSS.mainWorker.do("getMovedFen", {
     moveString,
     fen: chessboardState.fen,
+    lmf: Array.from(chessboardState.lmf),
+    lmt: Array.from(chessboardState.lmt),
   });
+
+  Object.assign(chessboardState, { fen, lmf, lmt });
 };
 
 addListener(() => {
@@ -75,6 +83,18 @@ addListener(() => {
         prevFen: chessboardState.fen,
         chessBoardUpdating: false,
       });
+
+      if (chessboardState.fen.split(" ")[1] === "b") {
+        window.CHSS.mainWorker
+          .do("getAiMovedFen", {
+            fen: chessboardState.fen,
+            lmf: Array.from(chessboardState.lmf),
+            lmt: Array.from(chessboardState.lmt),
+          })
+          .then((result: { fen: string; lmf: number[]; lmt: number[] }) =>
+            Object.assign(chessboardState, result)
+          );
+      }
     });
 
     window.CHSS.mainWorker
