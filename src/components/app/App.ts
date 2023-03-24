@@ -1,10 +1,5 @@
-import {
-  component,
-  html,
-  createState,
-  handler,
-} from "../../../../../litState/lib";
-import { Router } from "../../../../../litState/lib/components";
+import { component, html, createState, handler } from "../../../litState/src";
+import { Router } from "../../../litState/src/components";
 import { routes } from "../../helpers/routes";
 import { HeaderNav } from "../headerNav/HeaderNav";
 import { LeftBar, toggleLeftBar } from "../leftBar/LeftBar";

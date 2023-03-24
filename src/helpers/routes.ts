@@ -1,4 +1,4 @@
-import { html } from "../../../../litState/lib";
+import { html } from "../../litState/src";
 import { Game } from "../components/game/Game";
 
 export const routes = {

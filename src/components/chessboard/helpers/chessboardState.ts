@@ -1,4 +1,4 @@
-import { addListener, createState } from "../../../../../../litState/lib";
+import { addListener, createState } from "../../../../litState/src";
 import { animateBoardChanges } from "./animateBoardChanges";
 
 const startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

@@ -1,5 +1,5 @@
-import { component, html } from "../../../../../litState/lib";
-import { Link } from "../../../../../litState/lib/components";
+import { component, html } from "../../../litState/src";
+import { Link } from "../../../litState/src/components";
 
 export const HeaderNav = component(
   () =>

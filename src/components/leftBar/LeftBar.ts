@@ -1,4 +1,4 @@
-import { component, createState, html } from "../../../../../litState/lib";
+import { component, createState, html } from "../../../litState/src";
 
 const state = createState({
   leftBarClass: "closed",

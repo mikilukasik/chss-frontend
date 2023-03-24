@@ -1,4 +1,4 @@
-import { component, html } from "../../../../../litState/lib";
+import { component, html } from "../../../litState/src";
 import { Chessboard } from "../chessboard/Chessboard";
 import "./game.scss";
 

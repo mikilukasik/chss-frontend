@@ -9,7 +9,7 @@ module.exports = (env, argv) => {
   if (mode === "production") {
     console.log("creating production build");
     devtool = false;
-    outPath = path.resolve(__dirname, "dist_prod");
+    outPath = path.resolve(__dirname, "docs");
   }
 
   const webpackConfig = [

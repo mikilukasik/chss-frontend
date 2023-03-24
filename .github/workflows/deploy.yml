@@ -14,11 +14,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: "production"
+          submodules: "recursive"
+
+      - name: Add credentials
+        run: |
+          git config user.name "mikilukasik"
+          git config user.email "miklosbacsi@gmail.com"
 
       - name: Merge main branch
         run: |
           git fetch origin main:main
-          git merge main --no-edit
+          git merge main --no-edit --allow-unrelated-histories
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -32,8 +38,6 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
           git add docs
           git commit -m "Build and update docs folder - these are static assets that get deployed to github pages"
           git push

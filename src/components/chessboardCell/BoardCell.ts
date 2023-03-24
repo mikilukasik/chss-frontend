@@ -1,6 +1,6 @@
 import "./boardCell.scss";
 
-import { component, handler, html } from "../../../../../litState/lib";
+import { component, handler, html } from "../../../litState/src";
 import { pieceFilenames, pieceNames } from "../../helpers/maps/pieceMap";
 import { cellIndex2cellStr } from "../../../chss-module-engine/src/engine_new/transformers/cellIndex2cellStr.js";
 import { chessboardState } from "../chessboard/helpers/chessboardState";

@@ -1,6 +1,6 @@
 import "./chessboard.scss";
 
-import { component, html } from "../../../../../litState/lib";
+import { component, html } from "../../../litState/src";
 import { chessboardState } from "./helpers/chessboardState";
 import { BoardCell } from "../chessboardCell/BoardCell";
 

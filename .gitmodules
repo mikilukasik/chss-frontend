@@ -1,3 +1,6 @@
 [submodule "chss-module-engine"]
 	path = chss-module-engine
 	url = git@github.com:mikilukasik/chss-module-engine.git
+[submodule "litState"]
+	path = litState
+	url = git@github.com:mikilukasik/litState.git
