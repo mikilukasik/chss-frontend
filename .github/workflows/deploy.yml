@@ -15,6 +15,7 @@ jobs:
         with:
           ref: "production"
           submodules: "recursive"
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Add credentials
         run: |
