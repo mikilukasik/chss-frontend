@@ -6,4 +6,4 @@ import "./main.scss";
 const container = document.getElementById("app-container");
 if (container) mount(App("app-root"), container);
 
-console.log("debug log");
+console.log("debug log testing");
