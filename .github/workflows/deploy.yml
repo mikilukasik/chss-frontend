@@ -22,6 +22,11 @@ jobs:
           git config user.name "mikilukasik"
           git config user.email "miklosbacsi@gmail.com"
 
+      - name: Pull latest submodules
+        run: |
+          git config pull.rebase true
+          git submodule foreach git pull
+
       - name: Overwrite production branch with main branch
         run: |
           git fetch origin main
