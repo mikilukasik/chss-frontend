@@ -43,10 +43,15 @@ export const animateBoardChanges = async (
   function getSquarePosition(square: string) {
     const col = square.charCodeAt(0) - 97;
     const row = 8 - parseInt(square.charAt(1));
-    return {
-      x: col * 100,
-      y: row * 100,
-    };
+    return false && chessboardState.rotated
+      ? {
+          x: (7 - col) * 100,
+          y: (7 - row) * 100,
+        }
+      : {
+          x: col * 100,
+          y: row * 100,
+        };
   }
 
   function getTranslationValues(from: string, to: string) {
