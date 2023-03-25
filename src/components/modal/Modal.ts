@@ -6,12 +6,17 @@ const modalState = createState({
   open: false,
   content: "",
   resolve: (result: any) => {},
+  allowClose: true,
 });
 
 export const renderModal = (
-  contentRenderer: (resolver: (result: any) => void) => string
-) =>
-  new Promise<any>((resolve) => {
+  contentRenderer: (resolver: (result: any) => void) => string,
+  options: { allowClose?: boolean } = {}
+) => {
+  const { allowClose = true } = options;
+  modalState.allowClose = allowClose;
+
+  return new Promise<any>((resolve) => {
     const resolveAndClose = (val: any) => {
       modalState.open = false;
       resolve(val);
@@ -23,6 +28,7 @@ export const renderModal = (
       resolve,
     });
   });
+};
 
 const closeModal = handler((e, t) => {
   e.preventDefault();
@@ -36,7 +42,7 @@ export const Modal = component(
   () => html`
     <div
       class="modal-container${modalState.open ? " open" : ""}"
-      onclick="${closeModal}"
+      onclick="${modalState.allowClose ? closeModal : ""}"
       id="modal-container"
     >
       <div
@@ -44,9 +50,11 @@ export const Modal = component(
         id="modal-content"
         onclick="event.stopPropagation()"
       >
-        <span class="close" onclick="${closeModal}" id="modal-close-button"
-          >&times;</span
-        >
+        ${modalState.allowClose
+          ? `<span class="close" onclick="${closeModal}" id="modal-close-button">
+              &times;
+            </span>`
+          : ""}
         ${modalState.content}
       </div>
     </div>

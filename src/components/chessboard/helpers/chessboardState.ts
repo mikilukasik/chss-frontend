@@ -1,4 +1,8 @@
-import { addListener, createState } from "../../../../litState/src";
+import {
+  addListener,
+  batchUpdate,
+  createState,
+} from "../../../../litState/src";
 import { animateBoardChanges } from "./animateBoardChanges";
 
 const startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -54,6 +58,10 @@ export const chessboardState = createState({
   lmf: startingLmf,
   lmt: startingLmt,
   rotated: false,
+  computerPlaysLight: false,
+  computerPlaysLightPrevVal: false,
+  computerPlaysDarkPrevVal: false,
+  computerPlaysDark: true,
   makeMove: (async (a) => {}) as (fen: string) => void,
 });
 
@@ -68,6 +76,60 @@ chessboardState.makeMove = async (moveString: string) => {
   Object.assign(chessboardState, { fen, lmf, lmt });
 };
 
+const makeComputerMove = () => {
+  const nextPiece = chessboardState.fen.split(" ")[1];
+
+  if (
+    (nextPiece === "b" && chessboardState.computerPlaysDark) ||
+    (nextPiece === "w" && chessboardState.computerPlaysLight)
+  ) {
+    console.log(
+      { nextPiece },
+      chessboardState.computerPlaysDark,
+      chessboardState.computerPlaysLight
+    );
+
+    window.CHSS.mainWorker
+      .do("getAiMovedFen", {
+        fen: chessboardState.fen,
+        lmf: Array.from(chessboardState.lmf),
+        lmt: Array.from(chessboardState.lmt),
+      })
+      .then((result: { fen: string; lmf: number[]; lmt: number[] }) =>
+        Object.assign(chessboardState, result)
+      );
+  }
+};
+
+const animateAndUpdate = () => {
+  animateBoardChanges(0.3).then(() => {
+    Object.assign(chessboardState, {
+      prevFen: chessboardState.fen,
+      chessBoardUpdating: false,
+    });
+
+    makeComputerMove();
+  });
+};
+
+addListener(() => {
+  if (
+    chessboardState.computerPlaysLightPrevVal !==
+      chessboardState.computerPlaysLight ||
+    chessboardState.computerPlaysDarkPrevVal !==
+      chessboardState.computerPlaysDark
+  ) {
+    batchUpdate(() => {
+      chessboardState.computerPlaysDarkPrevVal =
+        chessboardState.computerPlaysDark;
+      chessboardState.computerPlaysLightPrevVal =
+        chessboardState.computerPlaysLight;
+    });
+
+    makeComputerMove();
+  }
+}, "computerSideChanged");
+
 addListener(() => {
   if (
     chessboardState.prevFen !== chessboardState.fen &&
@@ -79,24 +141,7 @@ addListener(() => {
       targetCells: [],
     });
 
-    animateBoardChanges(0.3).then(() => {
-      Object.assign(chessboardState, {
-        prevFen: chessboardState.fen,
-        chessBoardUpdating: false,
-      });
-
-      if (chessboardState.fen.split(" ")[1] === "b") {
-        window.CHSS.mainWorker
-          .do("getAiMovedFen", {
-            fen: chessboardState.fen,
-            lmf: Array.from(chessboardState.lmf),
-            lmt: Array.from(chessboardState.lmt),
-          })
-          .then((result: { fen: string; lmf: number[]; lmt: number[] }) =>
-            Object.assign(chessboardState, result)
-          );
-      }
-    });
+    animateAndUpdate();
 
     window.CHSS.mainWorker
       .do("getNextMoves", {
