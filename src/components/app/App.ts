@@ -3,6 +3,7 @@ import { Router } from "../../../litState/src/components";
 import { routes } from "../../helpers/routes";
 import { HeaderNav } from "../headerNav/HeaderNav";
 import { LeftBar, toggleLeftBar } from "../leftBar/LeftBar";
+import { Modal } from "../modal/Modal";
 import "./app.scss";
 
 const hamburgerClickHandler = handler(() => toggleLeftBar()).trim();
@@ -10,6 +11,7 @@ const hamburgerClickHandler = handler(() => toggleLeftBar()).trim();
 export const App = component(
   () => html`
     <div class="wrapper">
+      ${Modal("main-modal")}
       <div class="header">
         <div
           id="hamburger"
