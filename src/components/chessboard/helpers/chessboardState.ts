@@ -53,6 +53,7 @@ export const chessboardState = createState({
   selectedCell: null as string | null,
   lmf: startingLmf,
   lmt: startingLmt,
+  rotated: false,
   makeMove: (async (a) => {}) as (fen: string) => void,
 });
 

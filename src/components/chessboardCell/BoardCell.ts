@@ -31,7 +31,9 @@ export const BoardCellContent = component(
   ({ cellStr }) => ({
     class: `cell-svg-container${
       chessboardState.selectedCell === cellStr ? " selected" : ""
-    }${chessboardState.targetCells[cellStr as string] ? " highlighted" : ""}`,
+    }${chessboardState.targetCells[cellStr as string] ? " highlighted" : ""}${
+      chessboardState.rotated ? " upside-down" : ""
+    }`,
     "data-square": cellStr,
   })
 );
