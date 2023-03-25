@@ -4,13 +4,32 @@ import { component, createState, handler, html } from "../../../litState/src";
 
 const modalState = createState({
   open: false,
+  content: "",
+  resolve: (result: any) => {},
 });
+
+export const renderModal = (
+  contentRenderer: (resolver: (result: any) => void) => string
+) =>
+  new Promise<any>((resolve) => {
+    const resolveAndClose = (val: any) => {
+      modalState.open = false;
+      resolve(val);
+    };
+
+    Object.assign(modalState, {
+      content: contentRenderer(resolveAndClose),
+      open: true,
+      resolve,
+    });
+  });
 
 const closeModal = handler((e, t) => {
   e.preventDefault();
-  console.log(e, t, t.id);
-  if (t.id === "modal-container" || t.id === "modal-close-button")
+  if (t.id === "modal-container" || t.id === "modal-close-button") {
     modalState.open = false;
+    modalState.resolve(null);
+  }
 });
 
 export const Modal = component(
@@ -28,8 +47,7 @@ export const Modal = component(
         <span class="close" onclick="${closeModal}" id="modal-close-button"
           >&times;</span
         >
-        <p>This is a simple modal.</p>
-        <p>Click the close button or outside the modal to close it.</p>
+        ${modalState.content}
       </div>
     </div>
   `
