@@ -24,8 +24,7 @@ jobs:
 
       - name: Pull latest submodules
         run: |
-          git config pull.rebase true
-          git submodule foreach git pull
+          git submodule foreach git reset --hard FETCH_HEAD
 
       - name: Overwrite production branch with main branch
         run: |
