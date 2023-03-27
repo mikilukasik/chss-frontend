@@ -5,14 +5,36 @@ import { pieceFilenames, pieceNames } from "../../helpers/maps/pieceMap";
 import { cellIndex2cellStr } from "../../../chss-module-engine/src/engine_new/transformers/cellIndex2cellStr.js";
 import { chessboardState } from "../chessboard/helpers/chessboardState";
 import { CHSS } from "../../helpers/global";
+import { isPromotionMove } from "../../helpers/utils/isPromotionMove";
+import { renderModal } from "../modal/Modal";
+import { PromotionSelectorModal } from "../promotionSelectorModal/PromotionSelectorModal";
 
-CHSS.handlers.cellClickHandler = (cellStr: string) => {
+CHSS.handlers.cellClickHandler = async (cellStr: string) => {
   if (chessboardState.selectedCell === cellStr) {
     chessboardState.selectedCell = null;
   } else if (chessboardState.movableCells.includes(cellStr)) {
     chessboardState.selectedCell = cellStr;
   } else if (chessboardState.targetCells[cellStr]) {
     const move = chessboardState.selectedCell + cellStr;
+
+    if (isPromotionMove(move, chessboardState.fen)) {
+      const promotionPiece = await renderModal(
+        (resolve) =>
+          PromotionSelectorModal("promotion-selector-modal", {
+            resolve,
+            pieces:
+              chessboardState.fen.split(" ")[1] === "w"
+                ? ["Q", "N", "R", "B"]
+                : ["q", "n", "r", "b"],
+          }),
+        { allowClose: false }
+      );
+
+      const moveWithPromotion = move + promotionPiece;
+      chessboardState.makeMove(moveWithPromotion);
+      return;
+    }
+
     chessboardState.makeMove(move);
   }
 };
