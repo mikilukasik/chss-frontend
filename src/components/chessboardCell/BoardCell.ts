@@ -30,7 +30,7 @@ CHSS.handlers.cellClickHandler = async (cellStr: string) => {
         { allowClose: false }
       );
 
-      const moveWithPromotion = move + promotionPiece;
+      const moveWithPromotion = move + promotionPiece.toLowerCase();
       chessboardState.makeMove(moveWithPromotion);
       return;
     }
