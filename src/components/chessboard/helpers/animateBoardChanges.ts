@@ -2,16 +2,46 @@ import { getFenDiff } from "../../../../chss-module-engine/src/engine_new/utils/
 import { BoardCellContent } from "../../chessboardCell/BoardCell";
 import { chessboardState } from "./chessboardState";
 
+const getSquarePosition = (square: string) => {
+  const col = square.charCodeAt(0) - 97;
+  const row = 8 - parseInt(square.charAt(1));
+  return false && chessboardState.rotated
+    ? {
+        x: (7 - col) * 100,
+        y: (7 - row) * 100,
+      }
+    : {
+        x: col * 100,
+        y: row * 100,
+      };
+};
+
+const getTranslationValues = (from: string, to: string) => {
+  const fromPosition = getSquarePosition(from);
+  const toPosition = getSquarePosition(to);
+  return {
+    x: toPosition.x - fromPosition.x,
+    y: toPosition.y - fromPosition.y,
+  };
+};
+
 export const animateBoardChanges = async (
   seconds: number = 0.5
 ): Promise<void> => {
   const board = document.querySelector(".board");
   if (!board) return;
 
-  const { addedPieces, removedPieces, movedPieces } = getFenDiff(
-    chessboardState.prevFen,
-    chessboardState.fen
-  );
+  const {
+    addedPieces,
+    removedPieces,
+    movedPieces,
+    promotionMove,
+  }: {
+    addedPieces: { square: string; piece: string }[];
+    removedPieces: { square: string; piece: string }[];
+    movedPieces: { from: string; to: string; piece: string }[];
+    promotionMove: { from: string; to: string; piece: string } | null;
+  } = getFenDiff(chessboardState.prevFen, chessboardState.fen);
 
   // Animate removed pieces
   removedPieces.forEach(({ square }) => {
@@ -40,27 +70,52 @@ export const animateBoardChanges = async (
     pieceElement.addEventListener("transitionend", () => {});
   });
 
-  function getSquarePosition(square: string) {
-    const col = square.charCodeAt(0) - 97;
-    const row = 8 - parseInt(square.charAt(1));
-    return false && chessboardState.rotated
-      ? {
-          x: (7 - col) * 100,
-          y: (7 - row) * 100,
-        }
-      : {
-          x: col * 100,
-          y: row * 100,
-        };
-  }
+  // Animate promotion move
+  if (promotionMove) {
+    const { piece, from, to } = promotionMove;
 
-  function getTranslationValues(from: string, to: string) {
-    const fromPosition = getSquarePosition(from);
-    const toPosition = getSquarePosition(to);
-    return {
-      x: toPosition.x - fromPosition.x,
-      y: toPosition.y - fromPosition.y,
-    };
+    const pawnElement = board.querySelector(
+      `[data-square="${from}"]`
+    ) as HTMLElement;
+    const translation = getTranslationValues(from, to);
+
+    pawnElement.style.zIndex = "1";
+    pawnElement.style.transition = `all ${seconds}s ease-out`;
+    pawnElement.style.transform = `translate(${translation.x}%, ${translation.y}%)`;
+    pawnElement.style.opacity = "0";
+    pawnElement.style.transformOrigin = "0 0";
+
+    pawnElement.addEventListener("transitionend", () => {});
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(
+      `<body>${BoardCellContent(`board-cell-content-${from}-temp`, {
+        char: piece,
+        cellStr: from,
+      })}</body>`,
+      "text/html"
+    );
+    const promotedPieceElement = doc.body.firstElementChild as HTMLElement;
+
+    promotedPieceElement.style.opacity = "0";
+    promotedPieceElement.style.zIndex = "1";
+
+    const container = document.getElementById(
+      `board-square-${from}`
+    ) as HTMLElement;
+
+    container.appendChild(promotedPieceElement);
+    promotedPieceElement.style.transition = `all ${seconds}s ease-out`;
+
+    setTimeout(() => {
+      // promotedPieceElement.style.transition = `all ${seconds}s ease-out`;
+      promotedPieceElement.style.opacity = `1`;
+      promotedPieceElement.style.transform = `translate(${translation.x}%, ${translation.y}%)`;
+
+      promotedPieceElement.style.transformOrigin = "0 0";
+
+      promotedPieceElement.addEventListener("transitionend", () => {});
+    }, 0);
   }
 
   // Animate added pieces
