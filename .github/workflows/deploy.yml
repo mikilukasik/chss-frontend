@@ -36,7 +36,9 @@ jobs:
           git reset --hard FETCH_HEAD
 
       - name: Remove "docs" from .gitignore
-        run: sed -i '/^docs$/d' .gitignore
+        run: |
+          cd production
+          sed -i '/^docs$/d' .gitignore
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -45,11 +47,13 @@ jobs:
 
       - name: Install dependencies and build
         run: |
+          cd production
           npm ci
           npm run build
 
       - name: Commit and push changes
         run: |
+          cd production
           git add docs
           git commit -m "Build and update docs folder - these are static assets that get deployed to github pages"
           git push -f
