@@ -10,11 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+        with:
+          ref: "main"
+          submodules: "recursive"
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Checkout production branch
         uses: actions/checkout@v2
         with:
           ref: "production"
-          submodules: "recursive"
+          path: "production"
           token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Add credentials
@@ -22,12 +29,9 @@ jobs:
           git config user.name "mikilukasik"
           git config user.email "miklosbacsi@gmail.com"
 
-      # - name: Pull latest submodules
-      #   run: |
-      #     git submodule foreach git pull
-
       - name: Overwrite production branch with main branch
         run: |
+          cd production
           git fetch origin main
           git reset --hard FETCH_HEAD
 
