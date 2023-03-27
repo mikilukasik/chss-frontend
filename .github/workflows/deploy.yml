@@ -10,18 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v2
-        with:
-          ref: "main"
-          submodules: "recursive"
-          token: ${{ secrets.GH_ACCESS_TOKEN }}
-
-      - name: Checkout production branch
+      - name: Checkout repository
         uses: actions/checkout@v2
         with:
           ref: "production"
-          path: "production"
+          submodules: "recursive"
           token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Add credentials
@@ -29,16 +22,17 @@ jobs:
           git config user.name "mikilukasik"
           git config user.email "miklosbacsi@gmail.com"
 
+      - name: Pull latest submodules
+        run: |
+          git submodule foreach git reset --hard FETCH_HEAD
+
       - name: Overwrite production branch with main branch
         run: |
-          cd production
           git fetch origin main
           git reset --hard FETCH_HEAD
 
       - name: Remove "docs" from .gitignore
-        run: |
-          cd production
-          sed -i '/^docs$/d' .gitignore
+        run: sed -i '/^docs$/d' .gitignore
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -47,13 +41,11 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          cd production
           npm ci
           npm run build
 
       - name: Commit and push changes
         run: |
-          cd production
           git add docs
           git commit -m "Build and update docs folder - these are static assets that get deployed to github pages"
           git push -f
