@@ -26,7 +26,8 @@ const getTranslationValues = (from: string, to: string) => {
 };
 
 export const animateBoardChanges = async (
-  seconds: number = 0.5
+  seconds: number = 0.5,
+  moveToNotAnimate: string | null = null
 ): Promise<void> => {
   const board = document.querySelector(".board");
   if (!board) return;
@@ -62,8 +63,17 @@ export const animateBoardChanges = async (
     ) as HTMLElement;
     const translation = getTranslationValues(from, to);
 
+    if (
+      !moveToNotAnimate ||
+      !(
+        moveToNotAnimate.substring(0, 2) === from &&
+        moveToNotAnimate.substring(2, 4) === to
+      )
+    ) {
+      pieceElement.style.transition = `transform ${seconds}s ease-out`;
+    }
+
     pieceElement.style.zIndex = "1";
-    pieceElement.style.transition = `transform ${seconds}s ease-out`;
     pieceElement.style.transform = `translate(${translation.x}%, ${translation.y}%)`;
     pieceElement.style.transformOrigin = "0 0";
 

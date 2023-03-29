@@ -62,10 +62,17 @@ export const chessboardState = createState({
   computerPlaysLightPrevVal: false,
   computerPlaysDarkPrevVal: false,
   computerPlaysDark: true,
-  makeMove: (async (a) => {}) as (fen: string) => void,
+  skipMoveAnimation: null as string | null,
+  makeMove: (async (a, b) => {}) as (
+    fen: string,
+    options?: { dontAnimateMove?: boolean }
+  ) => void,
 });
 
-chessboardState.makeMove = async (moveString: string) => {
+chessboardState.makeMove = async (
+  moveString: string,
+  { dontAnimateMove } = {}
+) => {
   const { fen, lmf, lmt } = await window.CHSS.mainWorker.do("getMovedFen", {
     moveString,
     fen: chessboardState.fen,
@@ -73,7 +80,14 @@ chessboardState.makeMove = async (moveString: string) => {
     lmt: Array.from(chessboardState.lmt),
   });
 
-  Object.assign(chessboardState, { fen, lmf, lmt });
+  batchUpdate(() => {
+    Object.assign(chessboardState, {
+      fen,
+      lmf,
+      lmt,
+      ...(dontAnimateMove ? { skipMoveAnimation: moveString } : {}),
+    });
+  });
 };
 
 const makeComputerMove = () => {
@@ -83,12 +97,6 @@ const makeComputerMove = () => {
     (nextPiece === "b" && chessboardState.computerPlaysDark) ||
     (nextPiece === "w" && chessboardState.computerPlaysLight)
   ) {
-    console.log(
-      { nextPiece },
-      chessboardState.computerPlaysDark,
-      chessboardState.computerPlaysLight
-    );
-
     window.CHSS.mainWorker
       .do("getAiMovedFen", {
         fen: chessboardState.fen,
@@ -96,16 +104,19 @@ const makeComputerMove = () => {
         lmt: Array.from(chessboardState.lmt),
       })
       .then((result: { fen: string; lmf: number[]; lmt: number[] }) =>
-        Object.assign(chessboardState, result)
+        batchUpdate(() => Object.assign(chessboardState, result))
       );
   }
 };
 
 const animateAndUpdate = () => {
-  animateBoardChanges(0.3).then(() => {
-    Object.assign(chessboardState, {
-      prevFen: chessboardState.fen,
-      chessBoardUpdating: false,
+  animateBoardChanges(0.3, chessboardState.skipMoveAnimation).then(() => {
+    batchUpdate(() => {
+      Object.assign(chessboardState, {
+        prevFen: chessboardState.fen,
+        chessBoardUpdating: false,
+        skipMoveAnimation: null,
+      });
     });
 
     makeComputerMove();
@@ -135,11 +146,13 @@ addListener(() => {
     chessboardState.prevFen !== chessboardState.fen &&
     !chessboardState.chessBoardUpdating
   ) {
-    Object.assign(chessboardState, {
-      chessBoardUpdating: true,
-      selectedCell: null,
-      targetCells: [],
-    });
+    batchUpdate(() =>
+      Object.assign(chessboardState, {
+        chessBoardUpdating: true,
+        selectedCell: null,
+        targetCells: [],
+      })
+    );
 
     animateAndUpdate();
 
@@ -149,7 +162,9 @@ addListener(() => {
       })
       .then((nextMoves: string[]) => {
         const movableCells = getMovableCells(nextMoves);
-        Object.assign(chessboardState, { nextMoves, movableCells });
+        batchUpdate(() =>
+          Object.assign(chessboardState, { nextMoves, movableCells })
+        );
       });
   }
 }, "fen-update-listener");

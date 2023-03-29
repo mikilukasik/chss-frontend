@@ -9,33 +9,79 @@ import { isPromotionMove } from "../../helpers/utils/isPromotionMove";
 import { renderModal } from "../modal/Modal";
 import { PromotionSelectorModal } from "../promotionSelectorModal/PromotionSelectorModal";
 
-CHSS.handlers.cellClickHandler = async (cellStr: string) => {
-  if (chessboardState.selectedCell === cellStr) {
-    chessboardState.selectedCell = null;
-  } else if (chessboardState.movableCells.includes(cellStr)) {
+let clearSelectionOnMouseRelease = false;
+
+const moveSelectedTo = async (
+  cellStr: string,
+  { dontAnimateMove = false }: { dontAnimateMove?: boolean } = {}
+) => {
+  const move = chessboardState.selectedCell + cellStr;
+
+  if (isPromotionMove(move, chessboardState.fen)) {
+    const promotionPiece = await renderModal(
+      (resolve) =>
+        PromotionSelectorModal("promotion-selector-modal", {
+          resolve,
+          pieces:
+            chessboardState.fen.split(" ")[1] === "w"
+              ? ["Q", "N", "R", "B"]
+              : ["q", "n", "r", "b"],
+        }),
+      { allowClose: false }
+    );
+
+    const moveWithPromotion = move + promotionPiece.toLowerCase();
+    chessboardState.makeMove(moveWithPromotion, { dontAnimateMove });
+    return;
+  }
+
+  chessboardState.makeMove(move, { dontAnimateMove });
+};
+
+CHSS.handlers.cellDragStartHandler = async (
+  cellStr: string,
+  event: DragEvent
+) => {
+  if (chessboardState.movableCells.includes(cellStr)) {
     chessboardState.selectedCell = cellStr;
-  } else if (chessboardState.targetCells[cellStr]) {
-    const move = chessboardState.selectedCell + cellStr;
+    clearSelectionOnMouseRelease = false;
+  }
+};
 
-    if (isPromotionMove(move, chessboardState.fen)) {
-      const promotionPiece = await renderModal(
-        (resolve) =>
-          PromotionSelectorModal("promotion-selector-modal", {
-            resolve,
-            pieces:
-              chessboardState.fen.split(" ")[1] === "w"
-                ? ["Q", "N", "R", "B"]
-                : ["q", "n", "r", "b"],
-          }),
-        { allowClose: false }
-      );
+CHSS.handlers.cellDropHandler = async (cellStr: string) => {
+  if (chessboardState.targetCells[cellStr]) {
+    moveSelectedTo(cellStr, { dontAnimateMove: true });
+  }
+};
 
-      const moveWithPromotion = move + promotionPiece.toLowerCase();
-      chessboardState.makeMove(moveWithPromotion);
-      return;
+CHSS.handlers.cellClickHandler = async (cellStr: string) => {
+  if (
+    clearSelectionOnMouseRelease &&
+    chessboardState.selectedCell === cellStr
+  ) {
+    chessboardState.selectedCell = null;
+    clearSelectionOnMouseRelease = false;
+  }
+};
+
+CHSS.handlers.cellMouseDownHandler = async (cellStr: string) => {
+  if (chessboardState.movableCells.includes(cellStr)) {
+    if (chessboardState.selectedCell === cellStr) {
+      clearSelectionOnMouseRelease = true;
     }
 
-    chessboardState.makeMove(move);
+    chessboardState.selectedCell = cellStr;
+    return;
+  }
+
+  if (chessboardState.targetCells[cellStr]) {
+    moveSelectedTo(cellStr);
+    return;
+  }
+
+  if (chessboardState.selectedCell !== cellStr) {
+    chessboardState.selectedCell = null;
+    return;
   }
 };
 
@@ -64,7 +110,11 @@ export const BoardCell = component(
 
     return html`<div
       id="board-square-${cellStr}"
+      onmousedown="CHSS.handlers.cellMouseDownHandler('${cellStr}')"
       onclick="CHSS.handlers.cellClickHandler('${cellStr}')"
+      ondragstart="CHSS.handlers.cellDragStartHandler('${cellStr}', event)"
+      ondrop="CHSS.handlers.cellDropHandler('${cellStr}')"
+      ondragover="event.preventDefault()"
       class="square ${(index + Math.floor(index / 8)) % 2 ? "black" : "white"}"
     >
       ${BoardCellContent(`board-cell-content-${cellStr}`, { cellStr, char })}
