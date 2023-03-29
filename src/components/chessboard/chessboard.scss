@@ -8,6 +8,8 @@ $margin: 0px;
   padding-bottom: 100%;
   position: relative; // For absolute positioning of .square-wrapper elements
   transition: transform 0.75s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
   
   &.upside-down{
     transform: rotate(180deg);
