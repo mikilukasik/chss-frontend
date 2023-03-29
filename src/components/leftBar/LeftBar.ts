@@ -1,3 +1,5 @@
+import "./leftBar.scss";
+
 import { component, createState, html } from "../../../litState/src";
 
 const state = createState({

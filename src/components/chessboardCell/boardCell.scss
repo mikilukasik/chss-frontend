@@ -39,6 +39,7 @@
     
     .piece-svg {
       height: calc(min(100vw, 100vh - 100px)/11);
+      width: calc(min(100vw, 100vh - 100px)/11);
       transition: transform 0.75s ease-in-out;
 
       &.upside-down{

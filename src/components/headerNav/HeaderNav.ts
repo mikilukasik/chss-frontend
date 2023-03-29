@@ -1,9 +1,27 @@
-import { component, html } from "../../../litState/src";
+import "./headerNav.scss";
+
+import { component, handler, html } from "../../../litState/src";
 import { Link } from "../../../litState/src/components";
+import { toggleLeftBar } from "../leftBar/LeftBar";
+
+const hamburgerClickHandler = handler(() => toggleLeftBar()).trim();
 
 export const HeaderNav = component(
   () =>
-    html`<div class="header-nav">
-      Header ${Link("nav-link-to-game", { to: "/game", children: "Game" })}
-    </div>`
+    html` <div
+        id="hamburger"
+        class="hamburger"
+        onclick="${hamburgerClickHandler}"
+      >
+        <img
+          class="hamburger-svg"
+          src="assets/svg/Hamburger_icon.svg"
+          alt="Toggle left menu bar"
+        />
+      </div>
+
+      <div class="header-nav">
+        Header ${Link("nav-link-to-game", { to: "/game", children: "Game" })}
+      </div>`,
+  { class: "header" }
 );

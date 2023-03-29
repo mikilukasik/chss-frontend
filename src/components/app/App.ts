@@ -1,32 +1,15 @@
-import { component, html, createState, handler } from "../../../litState/src";
+import { component, html } from "../../../litState/src";
 import { Router } from "../../../litState/src/components";
 import { routes } from "../../helpers/routes";
 import { HeaderNav } from "../headerNav/HeaderNav";
-import { LeftBar, toggleLeftBar } from "../leftBar/LeftBar";
+import { LeftBar } from "../leftBar/LeftBar";
 import { Modal } from "../modal/Modal";
 import "./app.scss";
-
-const hamburgerClickHandler = handler(() => toggleLeftBar()).trim();
 
 export const App = component(
   () => html`
     <div class="wrapper">
-      ${Modal("main-modal")}
-      <div class="header">
-        <div
-          id="hamburger"
-          class="hamburger"
-          onclick="${hamburgerClickHandler}"
-        >
-          <img
-            class="hamburger-svg"
-            src="assets/svg/Hamburger_icon.svg"
-            alt="Toggle left menu bar"
-          />
-        </div>
-        ${HeaderNav("header-nav")}
-      </div>
-      ${LeftBar("left-bar")}
+      ${Modal("main-modal")} ${HeaderNav("header-nav")} ${LeftBar("left-bar")}
       <div class="main">${Router("router", { routes })}</div>
     </div>
   `
