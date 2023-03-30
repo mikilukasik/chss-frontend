@@ -62,6 +62,14 @@ const pieceClickHandler = handler((e, t) => {
 export const NewGameModal = component(({ resolve }) => {
   resolvers.resolver = resolve;
 
+  const errors = Object.values(newGameModalState.errors)
+    .map((e) =>
+      ErrorMessage(`newgame-modal-error-msg${e.message}`, {
+        message: e.message,
+      })
+    )
+    .join("");
+
   return html`
     ${Input("username-input", {
       inputId: "username-input-on-new-game-modal",
@@ -101,14 +109,6 @@ export const NewGameModal = component(({ resolve }) => {
       </button>
     </div>
 
-    <div class="form-errors">
-      ${Object.values(newGameModalState.errors)
-        .map((e) =>
-          ErrorMessage(`newgame-modal-error-msg${e.message}`, {
-            message: e.message,
-          })
-        )
-        .join("")}
-    </div>
+    ${errors && html`<div class="form-errors">${errors}</div>`}
   `;
 });
