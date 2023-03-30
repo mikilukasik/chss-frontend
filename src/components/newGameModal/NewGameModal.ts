@@ -4,6 +4,7 @@ import { component, createState, handler, html } from "../../../litState/src";
 import { pieceFilenames } from "../../helpers/maps/pieceMap";
 import { ErrorMessage } from "../errorMessage/ErrorMessage";
 import { Input } from "../input/Input";
+import { userState } from "../currentUser/helpers/userState";
 
 const newGameModalState = createState({
   errors: {} as Record<
@@ -68,6 +69,7 @@ export const NewGameModal = component(({ resolve }) => {
       label: "Player name",
       placeholder: "Enter your name",
       name: "username",
+      value: userState.name,
       error: Object.values(newGameModalState.errors).find(
         ({ elementsWithError }) =>
           elementsWithError.find((e) => e === "username-input")
