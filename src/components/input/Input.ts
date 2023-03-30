@@ -1,9 +1,10 @@
 import "./input.scss";
 
 import { component, createState, handler, html } from "../../../litState/src";
+import { ErrorMessage } from "../errorMessage/ErrorMessage";
 
 export const Input = component(
-  ({ inputId, name, label, placeholder, onchange, className, value = "" }) => {
+  ({ inputId, name, label, placeholder, onchange, value = "", error }) => {
     const localState = createState({ value });
 
     const onchangeHandler = handler((e: Event) => {
@@ -20,9 +21,11 @@ export const Input = component(
           name="${name || inputId}"
           placeholder="${placeholder}"
           oninput="${onchangeHandler}"
-          class="${className}"
+          class="${error ? "field-with-error" : ""}"
           value="${localState.value}"
         />
+
+        ${ErrorMessage({ error })}
       </div>
     `;
   }

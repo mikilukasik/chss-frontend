@@ -62,27 +62,16 @@ const pieceClickHandler = handler((e, t) => {
 export const NewGameModal = component(({ resolve }) => {
   resolvers.resolver = resolve;
 
-  const errors = Object.values(newGameModalState.errors)
-    .map((e) =>
-      ErrorMessage({
-        message: e.message,
-        id: `newgame-modal-error-msg${e.message}`,
-      })
-    )
-    .join("");
-
   return html`
     ${Input({
       inputId: "username-input-on-new-game-modal",
       label: "Player name",
       placeholder: "Enter your name",
       name: "username",
-      className: Object.values(newGameModalState.errors).find(
+      error: Object.values(newGameModalState.errors).find(
         ({ elementsWithError }) =>
           elementsWithError.find((e) => e === "username-input")
-      )
-        ? "field-with-error"
-        : "",
+      ),
       onchange: (value: string) => {
         if (value) newGameModalState.errors = {};
       },
@@ -109,7 +98,5 @@ export const NewGameModal = component(({ resolve }) => {
         />
       </button>
     </div>
-
-    ${errors && html`<div class="form-errors">${errors}</div>`}
   `;
 });
