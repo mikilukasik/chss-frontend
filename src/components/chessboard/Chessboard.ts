@@ -12,17 +12,19 @@ export const Chessboard = component(
     let cellIndex = 0;
     for (const char of pureFen) {
       if (isNaN(parseInt(char))) {
-        boardContent += BoardCell(`board-cell-${cellIndex}`, {
+        boardContent += BoardCell({
           index: cellIndex,
           char,
+          id: `board-cell-${cellIndex}`,
         });
         cellIndex += 1;
         continue;
       }
 
       for (let j = 0; j < parseInt(char); j++) {
-        boardContent += BoardCell(`board-cell-${cellIndex}`, {
+        boardContent += BoardCell({
           index: cellIndex,
+          id: `board-cell-${cellIndex}`,
         });
         cellIndex += 1;
       }

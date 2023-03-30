@@ -20,7 +20,7 @@ const moveSelectedTo = async (
   if (isPromotionMove(move, chessboardState.fen)) {
     const promotionPiece = await renderModal(
       (resolve) =>
-        PromotionSelectorModal("promotion-selector-modal", {
+        PromotionSelectorModal({
           resolve,
           pieces:
             chessboardState.fen.split(" ")[1] === "w"
@@ -117,7 +117,7 @@ export const BoardCell = component(
       ondragover="event.preventDefault()"
       class="square ${(index + Math.floor(index / 8)) % 2 ? "black" : "white"}"
     >
-      ${BoardCellContent(`board-cell-content-${cellStr}`, { cellStr, char })}
+      ${BoardCellContent({ cellStr, char })}
     </div> `;
   },
   { class: "square-wrapper" }

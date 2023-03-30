@@ -4,8 +4,6 @@ import { component, handler, html } from "../../../litState/src";
 
 export const Input = component(
   ({ inputId, name, label, placeholder, onchange, className }) => {
-    console.log(className);
-
     const onchangeHandler = handler((e: Event) => {
       onchange((e.target as HTMLInputElement).value);
     });

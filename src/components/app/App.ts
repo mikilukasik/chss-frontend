@@ -9,8 +9,8 @@ import "./app.scss";
 export const App = component(
   () => html`
     <div class="wrapper">
-      ${Modal("main-modal")} ${HeaderNav("header-nav")} ${LeftBar("left-bar")}
-      <div class="main">${Router("router", { routes })}</div>
+      ${Modal()} ${HeaderNav()} ${LeftBar()}
+      <div class="main">${Router({ routes })}</div>
     </div>
   `
 );

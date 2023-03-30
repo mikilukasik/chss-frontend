@@ -99,9 +99,10 @@ export const animateBoardChanges = async (
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(
-      `<body>${BoardCellContent(`board-cell-content-${from}-temp`, {
+      `<body>${BoardCellContent({
         char: piece,
         cellStr: from,
+        id: `board-cell-content-${from}-temp`,
       })}</body>`,
       "text/html"
     );
@@ -131,13 +132,11 @@ export const animateBoardChanges = async (
   // Animate added pieces
   addedPieces.forEach(({ piece, square }) => {
     const pieceElement = document.createElement("div");
-    pieceElement.innerHTML = BoardCellContent(
-      `board-cell-content-${square}-temp`,
-      {
-        char: piece,
-        cellStr: square,
-      }
-    );
+    pieceElement.innerHTML = BoardCellContent({
+      char: piece,
+      cellStr: square,
+      id: `board-cell-content-${square}-temp`,
+    });
     pieceElement.style.transform = "scale(0)";
 
     const container = document.getElementById(

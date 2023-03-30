@@ -7,7 +7,7 @@ import { NewGameModal } from "../components/newGameModal/NewGameModal";
 export const initApp = () => {
   setTimeout(async () => {
     const { gameState, username } = await renderModal(
-      (resolve) => NewGameModal("new-game-modal", { resolve }),
+      (resolve) => NewGameModal({ resolve }),
       { allowClose: false }
     );
 

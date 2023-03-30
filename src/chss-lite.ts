@@ -4,7 +4,7 @@ import { initApp } from "./helpers/initApp";
 
 const container = document.getElementById("app-container");
 if (container) {
-  mount(App("app-root"), container);
+  mount(App(), container);
   initApp();
 } else {
   throw new Error("App container not found.");

@@ -64,14 +64,15 @@ export const NewGameModal = component(({ resolve }) => {
 
   const errors = Object.values(newGameModalState.errors)
     .map((e) =>
-      ErrorMessage(`newgame-modal-error-msg${e.message}`, {
+      ErrorMessage({
         message: e.message,
+        id: `newgame-modal-error-msg${e.message}`,
       })
     )
     .join("");
 
   return html`
-    ${Input("username-input", {
+    ${Input({
       inputId: "username-input-on-new-game-modal",
       label: "Player name",
       placeholder: "Enter your name",

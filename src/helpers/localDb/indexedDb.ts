@@ -82,13 +82,6 @@ class LocalDb {
           } for condition ${JSON.stringify(condition)}`
         );
 
-      console.log({
-        indexToUse,
-        r: stores[this.storeName].indexes[indexToUse].map(
-          (key) => condition[key]
-        ),
-      });
-
       const index = store.index(indexToUse);
       const range = IDBKeyRange.only(
         stores[this.storeName].indexes[indexToUse].map(

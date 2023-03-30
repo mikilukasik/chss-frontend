@@ -10,7 +10,7 @@ const rotateBoardHandler = handler(
 export const Game = component(
   () => html`
     <div class="game-wrapper">
-      <div class="chessboard-wrapper">${Chessboard("main-chessboard")}</div>
+      <div class="chessboard-wrapper">${Chessboard()}</div>
       <div class="right-panel">
         <button onclick="${rotateBoardHandler}">rotate</button>
       </div>

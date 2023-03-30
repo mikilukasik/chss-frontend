@@ -21,9 +21,8 @@ export const HeaderNav = component(
         />
       </div>
 
-      <div class="header-nav">
-        ${CurrentUser("current-user-in-navbar")}
-        <!-- ${Link("nav-link-to-game", { to: "/game", children: "Game" })} -->
-      </div>`,
+      <div class="header-nav">${CurrentUser()}</div>`,
   { class: "header" }
 );
+
+// <!-- ${Link("nav-link-to-game", { to: "/game", children: "Game" })} -->
