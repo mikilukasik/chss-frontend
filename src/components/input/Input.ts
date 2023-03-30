@@ -1,11 +1,14 @@
 import "./input.scss";
 
-import { component, handler, html } from "../../../litState/src";
+import { component, createState, handler, html } from "../../../litState/src";
 
 export const Input = component(
-  ({ inputId, name, label, placeholder, onchange, className }) => {
+  ({ inputId, name, label, placeholder, onchange, className, value = "" }) => {
+    const localState = createState({ value });
+
     const onchangeHandler = handler((e: Event) => {
-      onchange((e.target as HTMLInputElement).value);
+      localState.value = (e.target as HTMLInputElement).value;
+      onchange(localState.value);
     });
 
     return html`
@@ -18,6 +21,7 @@ export const Input = component(
           placeholder="${placeholder}"
           oninput="${onchangeHandler}"
           class="${className}"
+          value="${localState.value}"
         />
       </div>
     `;
