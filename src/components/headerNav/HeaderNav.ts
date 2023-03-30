@@ -3,6 +3,7 @@ import "./headerNav.scss";
 import { component, handler, html } from "../../../litState/src";
 import { Link } from "../../../litState/src/components";
 import { toggleLeftBar } from "../leftBar/LeftBar";
+import { CurrentUser } from "../currentUser/CurrentUser";
 
 const hamburgerClickHandler = handler(() => toggleLeftBar()).trim();
 
@@ -21,7 +22,8 @@ export const HeaderNav = component(
       </div>
 
       <div class="header-nav">
-        Header ${Link("nav-link-to-game", { to: "/game", children: "Game" })}
+        ${CurrentUser("current-user-in-navbar")}
+        <!-- ${Link("nav-link-to-game", { to: "/game", children: "Game" })} -->
       </div>`,
   { class: "header" }
 );
