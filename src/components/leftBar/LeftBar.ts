@@ -1,9 +1,20 @@
 import "./leftBar.scss";
 
-import { component, createState, html } from "../../../litState/src";
+import { component, createState, handler, html } from "../../../litState/src";
+import { Button } from "../button/Button";
+import { newGame } from "./helpers/newGame";
 
 const state = createState({
   leftBarClass: "closed",
+});
+
+document.addEventListener("click", (e) => {
+  if (
+    e.target &&
+    (e.target as HTMLElement).id !== "left-bar" &&
+    (e.target as HTMLElement).id !== "hamburger-button"
+  )
+    state.leftBarClass = "closed";
 });
 
 export const toggleLeftBar = () => {
@@ -13,7 +24,10 @@ export const toggleLeftBar = () => {
 export const LeftBar = component(
   () => html`
     <div id="left-bar" class="left-bar ${state.leftBarClass}">
-      <p>Left bar content...</p>
+      ${Button({
+        buttonProps: { onclick: handler(() => newGame()) },
+        children: "New game",
+      })}
     </div>
   `
 );

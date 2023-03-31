@@ -24,10 +24,6 @@ addListener(async () => {
     )[0];
 
     if (userInLocalDb) {
-      console.log(
-        `Found user ${userInLocalDb.name} with id ${userInLocalDb.id}`
-      );
-
       userState.id = userInLocalDb.id;
       localStorage.setItem("activeUser", JSON.stringify(userState));
 
@@ -37,7 +33,6 @@ addListener(async () => {
     const userId = getUUID();
 
     await localDb.users.insert({ name: userState.name, id: userId });
-    console.log(`Inserted user ${userState.name} with id ${userId}`);
 
     userState.id = userId;
     localStorage.setItem("activeUser", JSON.stringify(userState));

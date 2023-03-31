@@ -5,15 +5,5 @@ import { renderModal } from "../components/modal/Modal";
 import { NewGameModal } from "../components/newGameModal/NewGameModal";
 
 export const initApp = () => {
-  setTimeout(async () => {
-    const { gameState, username } = await renderModal(
-      (resolve) => NewGameModal({ resolve }),
-      { allowClose: false }
-    );
-
-    batchUpdate(() => {
-      Object.assign(chessboardState, gameState);
-      Object.assign(userState, { name: username });
-    });
-  }, 0);
+  //
 };

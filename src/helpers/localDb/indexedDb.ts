@@ -99,7 +99,6 @@ class LocalDb {
 
         if (cursor) {
           results.push(cursor.value);
-          console.log(cursor.value);
           cursor.continue();
         } else {
           // Filter the results further if necessary

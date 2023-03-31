@@ -9,15 +9,13 @@ const hamburgerClickHandler = handler(() => toggleLeftBar()).trim();
 
 export const HeaderNav = component(
   () =>
-    html` <div
-        id="hamburger"
-        class="hamburger"
-        onclick="${hamburgerClickHandler}"
-      >
+    html` <div id="hamburger" class="hamburger">
         <img
+          id="hamburger-button"
           class="hamburger-svg"
           src="assets/svg/Hamburger_icon.svg"
           alt="Toggle left menu bar"
+          onclick="${hamburgerClickHandler}"
         />
       </div>
 

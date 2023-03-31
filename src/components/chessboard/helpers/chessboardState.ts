@@ -3,39 +3,30 @@ import {
   batchUpdate,
   createState,
 } from "../../../../litState/src";
+import { defaultStartingState } from "../../../helpers/constants/defaultStartingState";
+import { newGame } from "../../leftBar/helpers/newGame";
 import { animateBoardChanges } from "./animateBoardChanges";
-
-const startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-const startingMoves = [
-  "g1f3",
-  "g1h3",
-  "b1a3",
-  "b1c3",
-  "h2h3",
-  "h2h4",
-  "g2g3",
-  "g2g4",
-  "f2f3",
-  "f2f4",
-  "e2e3",
-  "e2e4",
-  "d2d3",
-  "d2d4",
-  "c2c3",
-  "c2c4",
-  "b2b3",
-  "b2b4",
-  "a2a3",
-  "a2a4",
-];
-const startingLmf = new Array(64).fill(255);
-const startingLmt = startingLmf.slice();
 
 declare global {
   interface Window {
     CHSS: any;
   }
 }
+
+const lastRememberedState = localStorage.getItem("chessBoardState");
+if (!lastRememberedState) setTimeout(newGame, 0);
+
+const startingState = lastRememberedState
+  ? (JSON.parse(lastRememberedState) as {
+      fen: string;
+      nextMoves: string[];
+      lmf: number[];
+      lmt: number[];
+      rotated: boolean;
+      computerPlaysDark: boolean;
+      computerPlaysLight: boolean;
+    })
+  : defaultStartingState;
 
 const getMovableCells = (nextMoves: string[]) =>
   Object.keys(
@@ -45,23 +36,23 @@ const getMovableCells = (nextMoves: string[]) =>
     }, {} as { [key: string]: true })
   );
 
-const movableCells = getMovableCells(startingMoves);
+const movableCells = getMovableCells(startingState.nextMoves);
 
 export const chessboardState = createState({
-  fen: startingFen,
-  prevFen: startingFen,
-  nextMoves: startingMoves,
+  fen: startingState.fen,
+  prevFen: startingState.fen,
+  nextMoves: startingState.nextMoves,
   movableCells,
   targetCells: {} as Record<string, true>,
   chessBoardUpdating: false,
   selectedCell: null as string | null,
-  lmf: startingLmf,
-  lmt: startingLmt,
-  rotated: false,
-  computerPlaysLight: false,
+  lmf: startingState.lmf,
+  lmt: startingState.lmt,
+  rotated: startingState.rotated,
+  computerPlaysLight: startingState.computerPlaysLight,
   computerPlaysLightPrevVal: false,
   computerPlaysDarkPrevVal: false,
-  computerPlaysDark: true,
+  computerPlaysDark: startingState.computerPlaysDark,
   skipMoveAnimation: null as string | null,
   makeMove: (async (a, b) => {}) as (
     fen: string,
@@ -137,7 +128,7 @@ addListener(() => {
         chessboardState.computerPlaysLight;
     });
 
-    makeComputerMove();
+    setTimeout(makeComputerMove, 500);
   }
 }, "computerSideChanged");
 
@@ -161,9 +152,30 @@ addListener(() => {
         fen: chessboardState.fen,
       })
       .then((nextMoves: string[]) => {
-        const movableCells = getMovableCells(nextMoves);
+        const wNext = chessboardState.fen.split(" ")[1] === "w";
+        const movableCells =
+          wNext && chessboardState.computerPlaysLight
+            ? {}
+            : !wNext && chessboardState.computerPlaysDark
+            ? {}
+            : getMovableCells(nextMoves);
         batchUpdate(() =>
           Object.assign(chessboardState, { nextMoves, movableCells })
+        );
+
+        const dataToLocalStorage = {
+          fen: chessboardState.fen,
+          nextMoves: chessboardState.nextMoves,
+          lmf: chessboardState.lmf,
+          lmt: chessboardState.lmt,
+          rotated: chessboardState.rotated,
+          computerPlaysLight: chessboardState.computerPlaysLight,
+          computerPlaysDark: chessboardState.computerPlaysDark,
+        };
+
+        localStorage.setItem(
+          "chessBoardState",
+          JSON.stringify(dataToLocalStorage)
         );
       });
   }

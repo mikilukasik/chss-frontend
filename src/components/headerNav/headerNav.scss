@@ -22,17 +22,16 @@
 
 .hamburger {
   display: block;
-  cursor: pointer;
   margin-right: auto;
   padding: 0.5rem 1rem 0 1rem;
   line-height: 2rem;
 }
 
 .hamburger-svg {
+  cursor: pointer;
   height: 1.5rem;
   width: 1.5rem;
 }
-
 
 @media (min-width: 1200px) {
   .hamburger {

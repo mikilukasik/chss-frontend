@@ -2,9 +2,9 @@ import "./newGameModal.scss";
 
 import { component, createState, handler, html } from "../../../litState/src";
 import { pieceFilenames } from "../../helpers/maps/pieceMap";
-import { ErrorMessage } from "../errorMessage/ErrorMessage";
 import { Input } from "../input/Input";
 import { userState } from "../currentUser/helpers/userState";
+import { defaultStartingState } from "../../helpers/constants/defaultStartingState";
 
 const newGameModalState = createState({
   errors: {} as Record<
@@ -40,6 +40,7 @@ const pieceClickHandler = handler((e, t) => {
   if (t?.id === "play-with-dark-button") {
     resolvers.resolver({
       gameState: {
+        ...defaultStartingState,
         computerPlaysDark: false,
         computerPlaysLight: true,
         rotated: true,
@@ -51,8 +52,9 @@ const pieceClickHandler = handler((e, t) => {
   if (t?.id === "play-with-light-button") {
     resolvers.resolver({
       gameState: {
-        computerPlaysLight: false,
+        ...defaultStartingState,
         computerPlaysDark: true,
+        computerPlaysLight: false,
         rotated: false,
       },
       username,
