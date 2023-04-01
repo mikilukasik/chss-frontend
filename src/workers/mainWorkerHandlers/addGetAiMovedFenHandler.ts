@@ -9,6 +9,12 @@ import { fen2intArray } from "../../../chss-module-engine/src/engine_new/transfo
 // import * as tf from "@tensorflow/tfjs";
 // const modelPromise = tf.loadLayersModel("tfjs_model/model.json");
 
+declare global {
+  interface Window {
+    CHSS_config: any;
+  }
+}
+
 const numArrToHexStr = (numArr: number[]) => {
   let result = "";
   for (const val of numArr) result += val.toString(16).padStart(2, "0");
@@ -23,7 +29,7 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
 
     const { winningMoveString } = await (
       await fetch(
-        `https://efl6xov7ogqwrca5ae5wyrrk6a0kiujw.lambda-url.eu-west-1.on.aws/?fen=${fen}&lmf=${numArrToHexStr(
+        `${self.CHSS_config.urls.lambdaAi}?fen=${fen}&lmf=${numArrToHexStr(
           lmf
         )}&lmt=${numArrToHexStr(lmt)}`
       )

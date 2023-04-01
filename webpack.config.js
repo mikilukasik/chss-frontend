@@ -14,7 +14,7 @@ module.exports = (env, argv) => {
 
   const webpackConfig = [
     {
-      entry: "./src/chss-lite.ts",
+      entry: `./src/fe-${process.env.CHSS_ENV}.ts`,
       mode,
       devtool,
       module: {
@@ -34,7 +34,7 @@ module.exports = (env, argv) => {
         extensions: [".tsx", ".ts", ".js"],
       },
       output: {
-        filename: "chss-lite.js",
+        filename: "fe.js",
         path: outPath,
       },
       plugins: [
@@ -45,7 +45,7 @@ module.exports = (env, argv) => {
     },
 
     {
-      entry: "./src/main-worker-frame.ts",
+      entry: `./src/main-worker-${process.env.CHSS_ENV}.ts`,
       mode,
       devtool,
       module: {
@@ -54,7 +54,6 @@ module.exports = (env, argv) => {
             test: /\.worker\.ts$/,
             loader: "worker-loader",
             exclude: [/node_modules/],
-            options: { filename: "[name].worker.js" },
           },
           {
             test: /\.ts$/,
@@ -67,12 +66,35 @@ module.exports = (env, argv) => {
         extensions: [".ts", ".js"],
       },
       output: {
-        filename: "main-worker-frame.js",
+        filename: "main-worker.js",
         path: outPath,
       },
       experiments: {
         topLevelAwait: true,
       },
+    },
+
+    {
+      entry: `./config/${process.env.CHSS_ENV}.ts`,
+      mode,
+      devtool,
+      module: {
+        rules: [
+          {
+            test: /\.ts$/,
+            use: "ts-loader",
+            exclude: /node_modules/,
+          },
+        ],
+      },
+      resolve: {
+        extensions: [".ts"],
+      },
+      output: {
+        filename: "config.js",
+        path: outPath,
+      },
+      plugins: [],
     },
   ];
 
