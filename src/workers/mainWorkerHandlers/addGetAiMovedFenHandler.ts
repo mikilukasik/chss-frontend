@@ -4,16 +4,30 @@ import { getMovedLmfLmt } from "../../../chss-module-engine/src/engine_new/utils
 import { moveString2move } from "../../../chss-module-engine/src/engine_new/transformers/moveString2move";
 import { board2fen } from "../../../chss-module-engine/src/engine_new/transformers/board2fen";
 import { fen2intArray } from "../../../chss-module-engine/src/engine_new/transformers/fen2intArray";
-import { predict } from "../../../chss-module-engine/src/engine_new/tfHelpers/predict";
+// import { predict } from "../../../chss-module-engine/src/engine_new/tfHelpers/predict";
 
-import * as tf from "@tensorflow/tfjs";
-const modelPromise = tf.loadLayersModel("tfjs_model/model.json");
+// import * as tf from "@tensorflow/tfjs";
+// const modelPromise = tf.loadLayersModel("tfjs_model/model.json");
+
+const numArrToHexStr = (numArr: number[]) => {
+  let result = "";
+  for (const val of numArr) result += val.toString(16).padStart(2, "0");
+  return result;
+};
 
 export const addGetAiMovedFenHandler = (api: WorkerApi) =>
   api.on("getAiMovedFen", async ({ fen, lmf, lmt }) => {
     const board = fen2intArray(fen);
-    const model = await modelPromise;
-    const { winningMoveString } = await predict({ board, lmf, lmt, model, tf });
+    // const model = await modelPromise;
+    // const { winningMoveString } = await predict({ board, lmf, lmt, model, tf });
+
+    const { winningMoveString } = await (
+      await fetch(
+        `https://efl6xov7ogqwrca5ae5wyrrk6a0kiujw.lambda-url.eu-west-1.on.aws/?fen=${fen}&lmf=${numArrToHexStr(
+          lmf
+        )}&lmt=${numArrToHexStr(lmt)}`
+      )
+    ).json();
 
     const move = moveString2move(winningMoveString);
     const movedBoard = getMovedBoard(move, board);
