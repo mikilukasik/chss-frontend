@@ -12,7 +12,6 @@ declare global {
 export const config = {} as Config;
 
 export const init = ({ config: envConfig }: { config: Config }) => {
-  console.log({ config });
   Object.assign(config, envConfig);
 
   const mainWorker = new Worker({ workerOptions: { config } });
