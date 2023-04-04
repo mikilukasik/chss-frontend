@@ -46,7 +46,7 @@ export const Modal = component(
       id="modal-container"
     >
       <div
-        class="modal-content"
+        class="${`modal-content${modalState.allowClose ? " allow-close" : ""}`}"
         id="modal-content"
         onclick="event.stopPropagation()"
       >

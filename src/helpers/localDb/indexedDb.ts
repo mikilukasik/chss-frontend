@@ -1,19 +1,28 @@
 const dbName = "chss-db";
 const version = 1;
 
-const stores: {
+type Indexes = { [key: string]: string[] };
+
+type Stores = {
   [key: string]: {
-    storeName: string;
-    keyPath: string;
-    indexes: { [key: string]: string[] };
+    keyPath?: string;
+    indexes?: Indexes;
   };
-} = {
+};
+
+const stores: Stores = {
   users: {
-    storeName: "users",
-    keyPath: "id",
     indexes: { id: ["id"], name: ["name"], idAndName: ["id", "name"] },
   },
+  activeGames: {
+    indexes: { id: ["id"], idAndPlayers: ["id", "wPlayer", "bPlayer"] },
+  },
+  activeGameFens: {
+    indexes: { id: ["id"], idGameAndIndex: ["id", "game", "index"] },
+  },
 };
+
+const defaultIndexes = { id: ["id"] } as Indexes;
 
 let db: IDBDatabase;
 const dbAwaiters = [] as ((db: IDBDatabase) => void)[];
@@ -28,7 +37,9 @@ const request = indexedDB.open(dbName, version);
 
 request.onupgradeneeded = (event) => {
   const db = (event.target as IDBOpenDBRequest).result;
-  Object.values(stores).forEach(({ storeName, keyPath, indexes }) => {
+  Object.keys(stores).forEach((storeName) => {
+    const { keyPath = "id", indexes = defaultIndexes } = stores[storeName];
+
     const store = db.createObjectStore(storeName, { keyPath });
 
     Object.keys(indexes).forEach((indexKey: string) => {
@@ -64,16 +75,18 @@ class LocalDb {
 
       const store = transaction.objectStore(this.storeName);
 
-      const indexToUse = Object.keys(stores[this.storeName].indexes).find(
-        (indexKey) => {
-          return Object.keys(condition).reduce(
-            (p, conditionKey) =>
-              p &&
-              stores[this.storeName].indexes[indexKey].includes(conditionKey),
-            true
-          );
-        }
-      );
+      const indexToUse = Object.keys(
+        stores[this.storeName].indexes || defaultIndexes
+      ).find((indexKey) => {
+        return Object.keys(condition).reduce(
+          (p, conditionKey) =>
+            p &&
+            (stores[this.storeName].indexes || defaultIndexes)[
+              indexKey
+            ].includes(conditionKey),
+          true
+        );
+      });
 
       if (!indexToUse)
         throw new Error(
@@ -84,8 +97,8 @@ class LocalDb {
 
       const index = store.index(indexToUse);
       const range = IDBKeyRange.only(
-        stores[this.storeName].indexes[indexToUse].map(
-          (key) => condition[key] || ""
+        (stores[this.storeName].indexes || defaultIndexes)[indexToUse].map(
+          (key: string) => condition[key] || ""
         )
       );
 

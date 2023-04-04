@@ -14,6 +14,7 @@ const newGameModalState = createState({
 });
 
 // todo: i really need local states for components
+// todo: that's done, now change this resolvers hack
 const resolvers = {
   resolver: (arg: any) => {},
 };
@@ -39,7 +40,7 @@ const pieceClickHandler = handler((e, t) => {
 
   if (t?.id === "play-with-dark-button") {
     resolvers.resolver({
-      gameState: {
+      gameStateUpdate: {
         ...defaultStartingState,
         computerPlaysDark: false,
         computerPlaysLight: true,
@@ -51,7 +52,7 @@ const pieceClickHandler = handler((e, t) => {
 
   if (t?.id === "play-with-light-button") {
     resolvers.resolver({
-      gameState: {
+      gameStateUpdate: {
         ...defaultStartingState,
         computerPlaysDark: true,
         computerPlaysLight: false,

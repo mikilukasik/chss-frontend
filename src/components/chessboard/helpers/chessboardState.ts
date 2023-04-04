@@ -1,9 +1,11 @@
+import { moveString2move } from "../../../../chss-module-engine/src/engine_new/transformers/moveString2move";
 import {
   addListener,
   batchUpdate,
   createState,
 } from "../../../../litState/src";
 import { defaultStartingState } from "../../../helpers/constants/defaultStartingState";
+import { addMove } from "../../../helpers/gameHelpers/addMove";
 import { newGame } from "../../leftBar/helpers/newGame";
 import { animateBoardChanges } from "./animateBoardChanges";
 
@@ -19,6 +21,8 @@ if (!lastRememberedState) setTimeout(newGame, 0);
 const startingState = lastRememberedState
   ? (JSON.parse(lastRememberedState) as {
       fen: string;
+      gameId: string;
+      moveIndex: number;
       nextMoves: string[];
       lmf: number[];
       lmt: number[];
@@ -39,6 +43,8 @@ const getMovableCells = (nextMoves: string[]) =>
 const movableCells = getMovableCells(startingState.nextMoves);
 
 export const chessboardState = createState({
+  gameId: null as string | null,
+  moveIndex: 0,
   fen: startingState.fen,
   prevFen: startingState.fen,
   nextMoves: startingState.nextMoves,
@@ -71,14 +77,25 @@ chessboardState.makeMove = async (
     lmt: Array.from(chessboardState.lmt),
   });
 
-  batchUpdate(() => {
-    Object.assign(chessboardState, {
-      fen,
-      lmf,
-      lmt,
-      ...(dontAnimateMove ? { skipMoveAnimation: moveString } : {}),
-    });
-  });
+  addMove({
+    gameId: chessboardState.gameId as string,
+    moveIndex: chessboardState.moveIndex,
+    fen: chessboardState.fen,
+    move: moveString2move(moveString),
+  })
+    .then(() => {
+      batchUpdate(() => {
+        Object.assign(chessboardState, {
+          fen,
+          lmf,
+          lmt,
+          ...(dontAnimateMove ? { skipMoveAnimation: moveString } : {}),
+        });
+
+        chessboardState.moveIndex += 1;
+      });
+    })
+    .catch(console.error);
 };
 
 const makeComputerMove = () => {
@@ -94,8 +111,21 @@ const makeComputerMove = () => {
         lmf: Array.from(chessboardState.lmf),
         lmt: Array.from(chessboardState.lmt),
       })
-      .then((result: { fen: string; lmf: number[]; lmt: number[] }) =>
-        batchUpdate(() => Object.assign(chessboardState, result))
+      .then(
+        (result: { fen: string; lmf: number[]; lmt: number[]; move: number }) =>
+          addMove({
+            gameId: chessboardState.gameId as string,
+            moveIndex: chessboardState.moveIndex,
+            fen: chessboardState.fen,
+            move: result.move,
+          }).then(() => result)
+      )
+      .then(
+        (result: { fen: string; lmf: number[]; lmt: number[]; move: number }) =>
+          batchUpdate(() => {
+            Object.assign(chessboardState, result);
+            chessboardState.moveIndex += 1;
+          })
       );
   }
 };
@@ -165,6 +195,8 @@ addListener(() => {
 
         const dataToLocalStorage = {
           fen: chessboardState.fen,
+          gameId: chessboardState.gameId,
+          moveIndex: chessboardState.moveIndex,
           nextMoves: chessboardState.nextMoves,
           lmf: chessboardState.lmf,
           lmt: chessboardState.lmt,

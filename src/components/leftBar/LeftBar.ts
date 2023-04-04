@@ -25,7 +25,7 @@ export const LeftBar = component(
   () => html`
     <div id="left-bar" class="left-bar ${state.leftBarClass}">
       ${Button({
-        buttonProps: { onclick: handler(() => newGame()) },
+        buttonProps: { onclick: handler(() => newGame({ allowClose: true })) },
         children: "New game",
       })}
     </div>
