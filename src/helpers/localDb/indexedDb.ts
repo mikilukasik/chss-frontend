@@ -1,5 +1,5 @@
 const dbName = "chss-db";
-const version = 2;
+const version = 3;
 
 type Indexes = { [key: string]: string[] };
 
@@ -38,6 +38,10 @@ const request = indexedDB.open(dbName, version);
 request.onupgradeneeded = (event) => {
   const db = (event.target as IDBOpenDBRequest).result;
   Object.keys(stores).forEach((storeName) => {
+    if (db.objectStoreNames.contains(storeName)) {
+      db.deleteObjectStore(storeName);
+    }
+
     const { keyPath = "id", indexes = defaultIndexes } = stores[storeName];
 
     const store = db.createObjectStore(storeName, { keyPath });
