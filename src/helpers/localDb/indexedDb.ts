@@ -1,5 +1,5 @@
 const dbName = "chss-db";
-const version = 1;
+const version = 2;
 
 type Indexes = { [key: string]: string[] };
 
