@@ -1,3 +1,5 @@
+import { getUUID } from "../utils/getUUID";
+
 export const defaultStartingState = {
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   nextMoves: [
@@ -28,4 +30,5 @@ export const defaultStartingState = {
   computerPlaysDark: false,
   computerPlaysLight: false,
   moveIndex: 0,
+  gameId: getUUID(),
 };
