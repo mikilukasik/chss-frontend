@@ -152,7 +152,13 @@ class LocalDb {
       };
 
       addRequest.onerror = (event) => {
-        reject((event.target as IDBRequest).error);
+        const error = (event.target as IDBRequest).error;
+        console.error(
+          `Error writing to ${this.storeName} indexedDB store.`,
+          error,
+          { data }
+        );
+        reject(error);
       };
     });
   }
