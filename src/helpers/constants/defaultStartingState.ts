@@ -27,4 +27,5 @@ export const defaultStartingState = {
   rotated: false,
   computerPlaysDark: false,
   computerPlaysLight: false,
+  moveIndex: 0,
 };

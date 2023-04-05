@@ -23,6 +23,7 @@ const stores: Stores = {
 };
 
 const defaultIndexes = { id: ["id"] } as Indexes;
+const defaultKeyPath = "id";
 
 let db: IDBDatabase;
 const dbAwaiters = [] as ((db: IDBDatabase) => void)[];
@@ -42,7 +43,8 @@ request.onupgradeneeded = (event) => {
       db.deleteObjectStore(storeName);
     }
 
-    const { keyPath = "id", indexes = defaultIndexes } = stores[storeName];
+    const { keyPath = defaultKeyPath, indexes = defaultIndexes } =
+      stores[storeName];
 
     const store = db.createObjectStore(storeName, { keyPath });
 

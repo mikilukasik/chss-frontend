@@ -44,7 +44,7 @@ const movableCells = getMovableCells(startingState.nextMoves);
 
 export const chessboardState = createState({
   gameId: null as string | null,
-  moveIndex: 0,
+  moveIndex: startingState.moveIndex,
   fen: startingState.fen,
   prevFen: startingState.fen,
   nextMoves: startingState.nextMoves,
