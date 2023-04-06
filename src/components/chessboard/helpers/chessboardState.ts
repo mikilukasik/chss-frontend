@@ -8,6 +8,7 @@ import { defaultStartingState } from "../../../helpers/constants/defaultStarting
 import { addMove } from "../../../helpers/gameHelpers/addMove";
 import { newGame } from "../../leftBar/helpers/newGame";
 import { animateBoardChanges } from "./animateBoardChanges";
+import { processCompletedGame } from "../../../helpers/gameHelpers/processCompletedGame";
 
 declare global {
   interface Window {
@@ -181,35 +182,50 @@ addListener(() => {
       .do("getNextMoves", {
         fen: chessboardState.fen,
       })
-      .then((nextMoves: string[]) => {
-        const wNext = chessboardState.fen.split(" ")[1] === "w";
-        const movableCells =
-          wNext && chessboardState.computerPlaysLight
-            ? {}
-            : !wNext && chessboardState.computerPlaysDark
-            ? {}
-            : getMovableCells(nextMoves);
-        batchUpdate(() =>
-          Object.assign(chessboardState, { nextMoves, movableCells })
-        );
+      .then(
+        ({
+          nextMoves,
+          gameEnded,
+          result,
+        }: {
+          nextMoves: string[];
+          gameEnded: boolean;
+          result: number;
+        }) => {
+          const wNext = chessboardState.fen.split(" ")[1] === "w";
+          const movableCells =
+            wNext && chessboardState.computerPlaysLight
+              ? {}
+              : !wNext && chessboardState.computerPlaysDark
+              ? {}
+              : getMovableCells(nextMoves);
+          batchUpdate(() =>
+            Object.assign(chessboardState, { nextMoves, movableCells })
+          );
 
-        const dataToLocalStorage = {
-          fen: chessboardState.fen,
-          gameId: chessboardState.gameId,
-          moveIndex: chessboardState.moveIndex,
-          nextMoves: chessboardState.nextMoves,
-          lmf: chessboardState.lmf,
-          lmt: chessboardState.lmt,
-          rotated: chessboardState.rotated,
-          computerPlaysLight: chessboardState.computerPlaysLight,
-          computerPlaysDark: chessboardState.computerPlaysDark,
-        };
+          const dataToLocalStorage = {
+            fen: chessboardState.fen,
+            gameId: chessboardState.gameId,
+            moveIndex: chessboardState.moveIndex,
+            nextMoves: chessboardState.nextMoves,
+            lmf: chessboardState.lmf,
+            lmt: chessboardState.lmt,
+            rotated: chessboardState.rotated,
+            computerPlaysLight: chessboardState.computerPlaysLight,
+            computerPlaysDark: chessboardState.computerPlaysDark,
+          };
 
-        localStorage.setItem(
-          "chessBoardState",
-          JSON.stringify(dataToLocalStorage)
-        );
-      });
+          localStorage.setItem(
+            "chessBoardState",
+            JSON.stringify(dataToLocalStorage)
+          );
+
+          if (gameEnded) {
+            processCompletedGame({ result });
+          }
+        }
+      )
+      .catch(console.error);
   }
 }, "fen-update-listener");
 
