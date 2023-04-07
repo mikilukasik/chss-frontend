@@ -6,7 +6,7 @@ import {
 } from "../../../../litState/src";
 import { defaultStartingState } from "../../../helpers/constants/defaultStartingState";
 import { addMove } from "../../../helpers/gameHelpers/addMove";
-import { newGame } from "../../leftBar/helpers/newGame";
+import { newGame } from "../../../helpers/gameHelpers/newGame";
 import { animateBoardChanges } from "./animateBoardChanges";
 import { processCompletedGame } from "../../../helpers/gameHelpers/processCompletedGame";
 
@@ -30,6 +30,7 @@ const startingState = lastRememberedState
       rotated: boolean;
       computerPlaysDark: boolean;
       computerPlaysLight: boolean;
+      gameEnded: boolean;
     })
   : defaultStartingState;
 
@@ -60,6 +61,7 @@ export const chessboardState = createState({
   computerPlaysLightPrevVal: false,
   computerPlaysDarkPrevVal: false,
   computerPlaysDark: startingState.computerPlaysDark,
+  gameEnded: startingState.gameEnded,
   skipMoveAnimation: null as string | null,
   makeMove: (async (a, b) => {}) as (
     fen: string,
@@ -103,8 +105,9 @@ const makeComputerMove = () => {
   const nextPiece = chessboardState.fen.split(" ")[1];
 
   if (
-    (nextPiece === "b" && chessboardState.computerPlaysDark) ||
-    (nextPiece === "w" && chessboardState.computerPlaysLight)
+    !chessboardState.gameEnded &&
+    ((nextPiece === "b" && chessboardState.computerPlaysDark) ||
+      (nextPiece === "w" && chessboardState.computerPlaysLight))
   ) {
     window.CHSS.mainWorker
       .do("getAiMovedFen", {
@@ -192,12 +195,13 @@ addListener(() => {
           gameEnded: boolean;
           result: number;
         }) => {
+          chessboardState.gameEnded = gameEnded;
           const wNext = chessboardState.fen.split(" ")[1] === "w";
           const movableCells =
             wNext && chessboardState.computerPlaysLight
-              ? {}
+              ? []
               : !wNext && chessboardState.computerPlaysDark
-              ? {}
+              ? []
               : getMovableCells(nextMoves);
           batchUpdate(() =>
             Object.assign(chessboardState, { nextMoves, movableCells })
@@ -213,6 +217,7 @@ addListener(() => {
             rotated: chessboardState.rotated,
             computerPlaysLight: chessboardState.computerPlaysLight,
             computerPlaysDark: chessboardState.computerPlaysDark,
+            gameEnded: chessboardState.gameEnded,
           };
 
           localStorage.setItem(

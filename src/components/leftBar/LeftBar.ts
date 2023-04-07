@@ -2,7 +2,7 @@ import "./leftBar.scss";
 
 import { component, createState, handler, html } from "../../../litState/src";
 import { Button } from "../button/Button";
-import { newGame } from "./helpers/newGame";
+import { newGame } from "../../helpers/gameHelpers/newGame";
 
 const state = createState({
   leftBarClass: "closed",

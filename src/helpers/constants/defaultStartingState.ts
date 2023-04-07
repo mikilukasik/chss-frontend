@@ -31,4 +31,5 @@ export const defaultStartingState = {
   computerPlaysLight: false,
   moveIndex: 0,
   gameId: getUUID(),
+  gameEnded: false,
 };
