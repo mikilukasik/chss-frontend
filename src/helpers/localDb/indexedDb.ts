@@ -1,5 +1,5 @@
 const dbName = "chss-db";
-const version = 3;
+const version = 5;
 
 type Indexes = { [key: string]: string[] };
 
@@ -12,18 +12,28 @@ type Stores = {
 
 const stores: Stores = {
   users: {
-    indexes: { id: ["id"], name: ["name"], idAndName: ["id", "name"] },
+    indexes: { name: ["name"] },
   },
-  activeGames: {
-    indexes: { id: ["id"], idAndPlayers: ["id", "wPlayer", "bPlayer"] },
+  games: {
+    indexes: { players: ["wPlayer", "bPlayer"] },
   },
-  activeGameFens: {
-    indexes: { id: ["id"], idGameAndIndex: ["id", "game", "index"] },
+  fens: {
+    indexes: { gameAndIndex: ["game", "index"] },
   },
 };
 
-const defaultIndexes = { id: ["id"] } as Indexes;
+const defaultIndexes = {
+  id: ["id"],
+  updateId: ["updateId"],
+} as Indexes;
 const defaultKeyPath = "id";
+
+const expandedStores: Stores = Object.keys(stores).reduce((p, key) => {
+  p[key] = {
+    indexes: { ...defaultIndexes, ...stores[key].indexes },
+  };
+  return p;
+}, {} as Stores);
 
 let db: IDBDatabase;
 const dbAwaiters = [] as ((db: IDBDatabase) => void)[];
@@ -38,13 +48,13 @@ const request = indexedDB.open(dbName, version);
 
 request.onupgradeneeded = (event) => {
   const db = (event.target as IDBOpenDBRequest).result;
-  Object.keys(stores).forEach((storeName) => {
+  Object.keys(expandedStores).forEach((storeName) => {
     if (db.objectStoreNames.contains(storeName)) {
       db.deleteObjectStore(storeName);
     }
 
     const { keyPath = defaultKeyPath, indexes = defaultIndexes } =
-      stores[storeName];
+      expandedStores[storeName];
 
     const store = db.createObjectStore(storeName, { keyPath });
 
@@ -82,12 +92,12 @@ class LocalDb {
       const store = transaction.objectStore(this.storeName);
 
       const indexToUse = Object.keys(
-        stores[this.storeName].indexes || defaultIndexes
+        expandedStores[this.storeName].indexes || defaultIndexes
       ).find((indexKey) => {
         return Object.keys(condition).reduce(
           (p, conditionKey) =>
             p &&
-            (stores[this.storeName].indexes || defaultIndexes)[
+            (expandedStores[this.storeName].indexes || defaultIndexes)[
               indexKey
             ].includes(conditionKey),
           true
@@ -103,9 +113,9 @@ class LocalDb {
 
       const index = store.index(indexToUse);
       const range = IDBKeyRange.only(
-        (stores[this.storeName].indexes || defaultIndexes)[indexToUse].map(
-          (key: string) => condition[key] || ""
-        )
+        (expandedStores[this.storeName].indexes || defaultIndexes)[
+          indexToUse
+        ].map((key: string) => condition[key] || "")
       );
 
       const getRequest = index.openCursor(range);
@@ -145,7 +155,7 @@ class LocalDb {
       );
       const objectStore = transaction.objectStore(this.storeName);
 
-      const addRequest = objectStore.add(data);
+      const addRequest = objectStore.add({ ...data, updateId: "pending" });
 
       addRequest.onsuccess = (event) => {
         resolve(event);
@@ -162,9 +172,72 @@ class LocalDb {
       };
     });
   }
+
+  public update(data: Record<string, unknown>) {
+    return new Promise(async (resolve, reject) => {
+      const transaction = (await getDb()).transaction(
+        [this.storeName],
+        "readwrite"
+      );
+      const objectStore = transaction.objectStore(this.storeName);
+
+      const addRequest = objectStore.put(data);
+
+      addRequest.onsuccess = (event) => {
+        resolve(event);
+      };
+
+      addRequest.onerror = (event) => {
+        const error = (event.target as IDBRequest).error;
+        console.error(
+          `Error processing update in ${this.storeName} indexedDB store.`,
+          error,
+          { data }
+        );
+        reject(error);
+      };
+    });
+  }
 }
 
-export const localDb = Object.keys(stores).reduce((p, c) => {
+type DbUpdate = Record<string, { add: Record<string, any>[] }>;
+
+export const localDb = Object.keys(expandedStores).reduce((p, c) => {
   p[c] = new LocalDb({ storeName: c });
   return p;
 }, {} as Record<string, LocalDb>);
+
+export const getDbUpdate = async (): Promise<DbUpdate> => {
+  const dataToPush = {} as DbUpdate;
+
+  for (const storeName of Object.keys(localDb)) {
+    const rowsToAdd = await localDb[storeName].findAll({ updateId: "pending" });
+
+    if (rowsToAdd && rowsToAdd.length) {
+      dataToPush[storeName] = { add: rowsToAdd };
+    }
+  }
+
+  return dataToPush;
+};
+
+export const processDbUpdateResult = async ({
+  dbUpdate,
+  updateResult,
+}: {
+  dbUpdate: DbUpdate;
+  updateResult: { updateIds: Record<string, number> };
+}) => {
+  if (!dbUpdate || !updateResult) return;
+
+  const { updateIds } = updateResult;
+
+  for (const tableName of Object.keys(updateIds)) {
+    for (const addedData of dbUpdate[tableName].add) {
+      await localDb[tableName].update({
+        ...addedData,
+        updateId: updateIds[tableName],
+      });
+    }
+  }
+};

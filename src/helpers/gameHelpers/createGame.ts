@@ -25,7 +25,7 @@ export const createGame = async ({
       : { wPlayer: engineName, bPlayer: userId }),
   };
 
-  await localDb.activeGames.insert(game);
+  await localDb.games.insert(game);
 
   return game;
 };

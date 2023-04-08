@@ -11,7 +11,7 @@ export const addMove = async ({
   fen: string;
   move: number | null;
 }) => {
-  await localDb.activeGameFens.insert({
+  await localDb.fens.insert({
     id: `${gameId}/${moveIndex}`,
     game: gameId,
     index: moveIndex,

@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "CHSS_ENV=production webpack --mode production",
-    "dev": "CHSS_ENV=local webpack -w --stats-children",
-    "watch:prod": "CHSS_ENV=production webpack -w --mode production",
+    "build": "CHSS_ENV=production webpack  --mode production",
+    "dev": "CHSS_ENV=local webpack  -w --stats-children",
+    "watch:prod": "CHSS_ENV=production webpack  -w --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
