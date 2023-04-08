@@ -32,6 +32,7 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "https://mikilukasik.github.io",
         },
         body: JSON.stringify({
           fen,
