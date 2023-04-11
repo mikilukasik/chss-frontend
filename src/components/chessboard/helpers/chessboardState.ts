@@ -114,14 +114,23 @@ const makeComputerMove = () => {
         fen: chessboardState.fen,
         lmf: Array.from(chessboardState.lmf),
         lmt: Array.from(chessboardState.lmt),
+        gameId: chessboardState.gameId as string,
+        moveIndex: chessboardState.moveIndex,
       })
       .then(
-        (result: { fen: string; lmf: number[]; lmt: number[]; move: number }) =>
+        (result: {
+          fen: string;
+          lmf: number[];
+          lmt: number[];
+          move: number;
+          moveUpdateId: number;
+        }) =>
           addMove({
             gameId: chessboardState.gameId as string,
             moveIndex: chessboardState.moveIndex,
             fen: chessboardState.fen,
             move: result.move,
+            updateId: result.moveUpdateId,
           }).then(() => result)
       )
       .then(

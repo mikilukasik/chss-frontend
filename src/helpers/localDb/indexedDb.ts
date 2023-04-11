@@ -175,7 +175,10 @@ class LocalDb {
       );
       const objectStore = transaction.objectStore(this.storeName);
 
-      const addRequest = objectStore.add({ ...data, updateId: "pending" });
+      const addRequest = objectStore.add({
+        ...data,
+        ...(data.updateId ? {} : { updateId: "pending" }),
+      });
 
       addRequest.onsuccess = (event) => {
         resolve(event);

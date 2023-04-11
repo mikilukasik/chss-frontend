@@ -20,14 +20,14 @@ declare global {
 }
 
 export const addGetAiMovedFenHandler = (api: WorkerApi) =>
-  api.on("getAiMovedFen", async ({ fen, lmf, lmt }) => {
+  api.on("getAiMovedFen", async ({ fen, lmf, lmt, gameId, moveIndex }) => {
     const board = fen2intArray(fen);
     // const model = await modelPromise;
     // const { winningMoveString } = await predict({ board, lmf, lmt, model, tf });
 
     const dbUpdate = await getDbUpdate();
 
-    const { winningMoveString, updateResult } = await (
+    const { winningMoveString, updateResult, moveUpdateId } = await (
       await fetch(self.CHSS_config.urls.lambdaAi, {
         method: "POST",
         headers: {
@@ -38,6 +38,8 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
           fen,
           lmf,
           lmt,
+          gameId,
+          moveIndex,
           dbUpdate,
         }),
       })
@@ -50,5 +52,5 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
     const { lmf: movedLmf, lmt: movedLmt } = getMovedLmfLmt({ lmf, lmt, move });
     const movedFen = board2fen(movedBoard);
 
-    return { fen: movedFen, lmf: movedLmf, lmt: movedLmt, move };
+    return { fen: movedFen, lmf: movedLmf, lmt: movedLmt, move, moveUpdateId };
   });

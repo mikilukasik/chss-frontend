@@ -5,11 +5,13 @@ export const addMove = async ({
   moveIndex,
   fen,
   move = null,
+  updateId,
 }: {
   gameId: string;
   moveIndex: number;
   fen: string;
   move: number | null;
+  updateId?: number;
 }) => {
   await localDb.fens.insert({
     id: `${gameId}/${moveIndex}`,
@@ -17,5 +19,6 @@ export const addMove = async ({
     index: moveIndex,
     fen,
     move,
+    updateId,
   });
 };
