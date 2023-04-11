@@ -1,7 +1,9 @@
 const dbName = "chss-db";
-const version = 5;
+const version = 9;
 
-type Indexes = { [key: string]: string[] };
+type Indexes = {
+  [key: string]: { keyPath: string | string[]; options?: { unique: boolean } };
+};
 
 type Stores = {
   [key: string]: {
@@ -12,19 +14,23 @@ type Stores = {
 
 const stores: Stores = {
   users: {
-    indexes: { name: ["name"] },
+    indexes: { name: { keyPath: ["name"], options: { unique: true } } },
   },
   games: {
-    indexes: { players: ["wPlayer", "bPlayer"] },
+    indexes: {
+      players: { keyPath: ["wPlayer", "bPlayer"], options: { unique: false } },
+    },
   },
   fens: {
-    indexes: { gameAndIndex: ["game", "index"] },
+    indexes: {
+      gameAndIndex: { keyPath: ["game", "index"], options: { unique: false } },
+    },
   },
 };
 
 const defaultIndexes = {
-  id: ["id"],
-  updateId: ["updateId"],
+  id: { keyPath: "id", options: { unique: true } },
+  updateId: { keyPath: "updateId", options: { unique: false } },
 } as Indexes;
 const defaultKeyPath = "id";
 
@@ -59,7 +65,11 @@ request.onupgradeneeded = (event) => {
     const store = db.createObjectStore(storeName, { keyPath });
 
     Object.keys(indexes).forEach((indexKey: string) => {
-      store.createIndex(indexKey, indexes[indexKey]);
+      store.createIndex(
+        indexKey,
+        indexes[indexKey].keyPath,
+        indexes[indexKey].options
+      );
     });
   });
 };
@@ -97,9 +107,13 @@ class LocalDb {
         return Object.keys(condition).reduce(
           (p, conditionKey) =>
             p &&
-            (expandedStores[this.storeName].indexes || defaultIndexes)[
-              indexKey
-            ].includes(conditionKey),
+            ([] as string[])
+              .concat(
+                (expandedStores[this.storeName].indexes || defaultIndexes)[
+                  indexKey
+                ].keyPath
+              )
+              .includes(conditionKey),
           true
         );
       });
@@ -112,10 +126,16 @@ class LocalDb {
         );
 
       const index = store.index(indexToUse);
+
+      const rangeDescriptor = ([] as string[])
+        .concat(
+          (expandedStores[this.storeName].indexes || defaultIndexes)[indexToUse]
+            .keyPath
+        )
+        .map((key: string) => condition[key] || "");
+
       const range = IDBKeyRange.only(
-        (expandedStores[this.storeName].indexes || defaultIndexes)[
-          indexToUse
-        ].map((key: string) => condition[key] || "")
+        rangeDescriptor.length > 1 ? rangeDescriptor : rangeDescriptor[0]
       );
 
       const getRequest = index.openCursor(range);
@@ -200,7 +220,7 @@ class LocalDb {
   }
 }
 
-type DbUpdate = Record<string, { add: Record<string, any>[] }>;
+export type DbUpdate = Record<string, { add: Record<string, any>[] }>;
 
 export const localDb = Object.keys(expandedStores).reduce((p, c) => {
   p[c] = new LocalDb({ storeName: c });
