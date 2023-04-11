@@ -1,0 +1,33 @@
+
+.status-messages-container {
+  position:absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  border-top: 1px solid silver;
+  border-left: 1px solid silver;
+  border-top-left-radius: 5px;
+  
+}
+
+.status-message {
+  max-height: 0;
+  transition: max-height 0.3s ease-out;
+  overflow: hidden;
+  color: white;
+  background-color: #42403d;
+  padding: 2px;
+  border-top-left-radius: 5px;
+
+
+  &.show {
+    max-height: 20px;
+  }
+}
+
+.status-message-error {
+  background-color: red;
+}
+
+.status-message-info {
+}

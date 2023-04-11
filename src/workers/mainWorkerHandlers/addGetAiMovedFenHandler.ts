@@ -8,10 +8,8 @@ import {
   getDbUpdate,
   processDbUpdateResult,
 } from "../../helpers/localDb/indexedDb";
-// import { predict } from "../../../chss-module-engine/src/engine_new/tfHelpers/predict";
 
-// import * as tf from "@tensorflow/tfjs";
-// const modelPromise = tf.loadLayersModel("tfjs_model/model.json");
+const DISPLAY_HOLDING_MSG_AFTER = 1000;
 
 declare global {
   interface Window {
@@ -19,11 +17,18 @@ declare global {
   }
 }
 
+const holdingMessage = 'Please wait <div class="spinner"></div>';
+
 export const addGetAiMovedFenHandler = (api: WorkerApi) =>
   api.on("getAiMovedFen", async ({ fen, lmf, lmt, gameId, moveIndex }) => {
+    let holdingMessageId: string | null = null;
+    const holdingMessageTimeout = setTimeout(async () => {
+      holdingMessageId = (await api.do("addStatusMessage", {
+        children: holdingMessage,
+      })) as string;
+    }, DISPLAY_HOLDING_MSG_AFTER);
+
     const board = fen2intArray(fen);
-    // const model = await modelPromise;
-    // const { winningMoveString } = await predict({ board, lmf, lmt, model, tf });
 
     const dbUpdate = await getDbUpdate();
 
@@ -44,6 +49,9 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
         }),
       })
     ).json();
+
+    clearTimeout(holdingMessageTimeout);
+    if (holdingMessageId) api.do("removeStatusMessage", holdingMessageId);
 
     await processDbUpdateResult({ dbUpdate, updateResult });
 

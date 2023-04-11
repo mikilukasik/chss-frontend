@@ -5,7 +5,8 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #9f9f9d;
+  background-color: #42403d;
+  touch-action: manipulation;
 }
 
 .wrapper {
@@ -21,7 +22,7 @@ body {
 
 .main {
   grid-area: main;
-  padding: 0 0;
+  padding: 0 1rem 0 0;
   overflow-y: hidden;
   transition: grid-template-columns 0.3s, grid-template-rows 0.3s;
 }
@@ -37,6 +38,23 @@ body {
   }
 
   .main {
-    padding: 1rem ;
+    padding: 0 1rem ;
+  }
+}
+
+.spinner {
+  display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin: 0 4px -2px 1px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #3498db;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

@@ -1,5 +1,5 @@
 const dbName = "chss-db";
-const version = 9;
+const version = 10;
 
 type Indexes = {
   [key: string]: { keyPath: string | string[]; options?: { unique: boolean } };
@@ -14,7 +14,7 @@ type Stores = {
 
 const stores: Stores = {
   users: {
-    indexes: { name: { keyPath: ["name"], options: { unique: true } } },
+    indexes: { name: { keyPath: "name", options: { unique: true } } },
   },
   games: {
     indexes: {

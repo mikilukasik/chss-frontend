@@ -3,7 +3,7 @@ import { Conversations } from "../apiTypes";
 
 export const getDo =
   ({ conversations, worker }: { conversations: Conversations; worker?: any }) =>
-  (command: string, data: Record<string, any>) => {
+  (command: string, data?: Record<string, any>) => {
     return new Promise((resolve, reject) => {
       const id = getRandomId();
       const conversation = {

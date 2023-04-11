@@ -1,1 +1,1 @@
-export const getRandomId = () => Math.random();
+export const getRandomId = () => Math.random().toString();
