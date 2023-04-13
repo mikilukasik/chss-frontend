@@ -16,6 +16,11 @@ declare global {
   }
 }
 
+const defaultEngineConfig = {
+  depth: 5,
+  moveSorters: [{ cutoff: 0.01 }],
+};
+
 const lastRememberedState = localStorage.getItem("chessBoardState");
 if (!lastRememberedState) setTimeout(newGame, 0);
 
@@ -67,6 +72,7 @@ export const chessboardState = createState({
     fen: string,
     options?: { dontAnimateMove?: boolean }
   ) => void,
+  engineConfig: defaultEngineConfig,
 });
 
 chessboardState.makeMove = async (
@@ -116,6 +122,7 @@ const makeComputerMove = () => {
         lmt: Array.from(chessboardState.lmt),
         gameId: chessboardState.gameId as string,
         moveIndex: chessboardState.moveIndex,
+        engineConfig: JSON.parse(JSON.stringify(chessboardState.engineConfig)),
       })
       .then(
         (result: {

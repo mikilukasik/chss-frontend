@@ -20,45 +20,59 @@ declare global {
 const holdingMessage = 'Please wait <div class="spinner"></div>';
 
 export const addGetAiMovedFenHandler = (api: WorkerApi) =>
-  api.on("getAiMovedFen", async ({ fen, lmf, lmt, gameId, moveIndex }) => {
-    let holdingMessageId: string | null = null;
-    const holdingMessageTimeout = setTimeout(async () => {
-      holdingMessageId = (await api.do("addStatusMessage", {
-        children: holdingMessage,
-      })) as string;
-    }, DISPLAY_HOLDING_MSG_AFTER);
+  api.on(
+    "getAiMovedFen",
+    async ({ fen, lmf, lmt, gameId, moveIndex, engineConfig }) => {
+      let holdingMessageId: string | null = null;
+      const holdingMessageTimeout = setTimeout(async () => {
+        holdingMessageId = (await api.do("addStatusMessage", {
+          children: holdingMessage,
+        })) as string;
+      }, DISPLAY_HOLDING_MSG_AFTER);
 
-    const board = fen2intArray(fen);
+      const board = fen2intArray(fen);
 
-    const dbUpdate = await getDbUpdate();
+      const dbUpdate = await getDbUpdate();
 
-    const { winningMoveString, updateResult, moveUpdateId } = await (
-      await fetch(self.CHSS_config.urls.lambdaAi, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "https://mikilukasik.github.io",
-        },
-        body: JSON.stringify({
-          fen,
-          lmf,
-          lmt,
-          gameId,
-          moveIndex,
-          dbUpdate,
-        }),
-      })
-    ).json();
+      const { winningMoveString, updateResult, moveUpdateId } = await (
+        await fetch(self.CHSS_config.urls.lambdaAi, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "https://mikilukasik.github.io",
+          },
+          body: JSON.stringify({
+            fen,
+            lmf,
+            lmt,
+            gameId,
+            moveIndex,
+            engineConfig,
+            dbUpdate,
+          }),
+        })
+      ).json();
 
-    clearTimeout(holdingMessageTimeout);
-    if (holdingMessageId) api.do("removeStatusMessage", holdingMessageId);
+      clearTimeout(holdingMessageTimeout);
+      if (holdingMessageId) api.do("removeStatusMessage", holdingMessageId);
 
-    await processDbUpdateResult({ dbUpdate, updateResult });
+      await processDbUpdateResult({ dbUpdate, updateResult });
 
-    const move = moveString2move(winningMoveString);
-    const movedBoard = getMovedBoard(move, board);
-    const { lmf: movedLmf, lmt: movedLmt } = getMovedLmfLmt({ lmf, lmt, move });
-    const movedFen = board2fen(movedBoard);
+      const move = moveString2move(winningMoveString);
+      const movedBoard = getMovedBoard(move, board);
+      const { lmf: movedLmf, lmt: movedLmt } = getMovedLmfLmt({
+        lmf,
+        lmt,
+        move,
+      });
+      const movedFen = board2fen(movedBoard);
 
-    return { fen: movedFen, lmf: movedLmf, lmt: movedLmt, move, moveUpdateId };
-  });
+      return {
+        fen: movedFen,
+        lmf: movedLmf,
+        lmt: movedLmt,
+        move,
+        moveUpdateId,
+      };
+    }
+  );

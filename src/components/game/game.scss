@@ -18,6 +18,10 @@
   border: 1px solid silver;
 }
 
+.engine-config-input-container {
+  padding: 10px 5px;
+}
+
 @media (min-width: 1040px) {
   .chessboard-wrapper {
     grid-column: 1 / 2;
