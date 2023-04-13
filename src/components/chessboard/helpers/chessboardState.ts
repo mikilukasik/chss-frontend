@@ -159,24 +159,6 @@ const animateAndUpdate = () => {
 
 addListener(() => {
   if (
-    chessboardState.computerPlaysLightPrevVal !==
-      chessboardState.computerPlaysLight ||
-    chessboardState.computerPlaysDarkPrevVal !==
-      chessboardState.computerPlaysDark
-  ) {
-    batchUpdate(() => {
-      chessboardState.computerPlaysDarkPrevVal =
-        chessboardState.computerPlaysDark;
-      chessboardState.computerPlaysLightPrevVal =
-        chessboardState.computerPlaysLight;
-    });
-
-    setTimeout(makeComputerMove, 500);
-  }
-}, "computerSideChanged");
-
-addListener(() => {
-  if (
     chessboardState.prevFen !== chessboardState.fen &&
     !chessboardState.chessBoardUpdating
   ) {
