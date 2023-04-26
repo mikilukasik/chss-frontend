@@ -20,7 +20,7 @@ const defaultEngineConfig = {
   depth: 5,
   moveSorters: [{ cutoff: 0.01 }],
   moveScoreRario: 4,
-  winnerScoreRario: 1,
+  winnerScoreRario: 0.3,
 };
 
 const lastRememberedState = localStorage.getItem("chessBoardState");
