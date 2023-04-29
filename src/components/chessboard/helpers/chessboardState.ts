@@ -19,8 +19,8 @@ declare global {
 const defaultEngineConfig = {
   depth: 5,
   moveSorters: [{ cutoff: 0.01 }],
-  moveScoreRario: 4,
-  winnerScoreRario: 0.3,
+  moveScoreRario: 5,
+  winnerScoreRario: 1,
 };
 
 const lastRememberedState = localStorage.getItem("chessBoardState");
