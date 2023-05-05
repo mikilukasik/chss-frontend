@@ -42,13 +42,16 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
             "Access-Control-Allow-Origin": "https://mikilukasik.github.io",
           },
           body: JSON.stringify({
-            fen,
-            lmf,
-            lmt,
-            gameId,
-            moveIndex,
-            engineConfig,
-            dbUpdate,
+            command: "getMove",
+            data: {
+              fen,
+              lmf,
+              lmt,
+              gameId,
+              moveIndex,
+              engineConfig,
+              dbUpdate,
+            },
           }),
         })
       ).json();
