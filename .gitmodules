@@ -4,3 +4,6 @@
 [submodule "litState"]
 	path = litState
 	url = git@github.com:mikilukasik/litState.git
+[submodule "chss-shared"]
+	path = chss-shared
+	url = git@github.com:mikilukasik/chss-shared.git
