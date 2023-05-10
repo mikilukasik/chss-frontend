@@ -1,5 +1,5 @@
 import { createState } from "../../../../litState/src";
-import { getRandomId } from "../../../helpers/utils/getRandomId";
+import { getRandomId } from "../../../../chss-shared/utils/getRandomId";
 
 export const statusMessagesState = createState({
   messages: [] as { children: string; id: string; show?: boolean }[],

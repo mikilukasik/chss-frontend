@@ -1,5 +1,5 @@
-import { OnHandler } from "../api/apiTypes";
-import { WorkerApi } from "../api/workerApi";
+import { OnHandler } from "../../chss-shared/workerApi/apiTypes";
+import { WorkerApi } from "../../chss-shared/workerApi/workerApi";
 import { chessboardState } from "../components/chessboard/helpers/chessboardState";
 
 export const CHSS = {

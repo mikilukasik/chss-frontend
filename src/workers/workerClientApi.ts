@@ -1,4 +1,4 @@
-import { WorkerApi } from "../api/workerApi";
+import { WorkerApi } from "../../chss-shared/workerApi/workerApi";
 import { catchErrors } from "../helpers/utils/catchErrors";
 import { addMainWorkerHandlers } from "./mainWorkerHandlers/mainWorkerHandlers";
 

@@ -1,4 +1,4 @@
-import { WorkerApi } from "../../api/workerApi";
+import { WorkerApi } from "../../../chss-shared/workerApi/workerApi";
 import { getMovedBoard } from "../../../chss-module-engine/src/engine_new/utils/getMovedBoard";
 import { getMovedLmfLmt } from "../../../chss-module-engine/src/engine_new/utils/getMovedLmfLmt";
 import { moveString2move } from "../../../chss-module-engine/src/engine_new/transformers/moveString2move";

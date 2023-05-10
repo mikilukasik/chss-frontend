@@ -1,6 +1,6 @@
 // @ts-expect-error worker-loader
 import Worker from "./workers/main.worker";
-import { WorkerApi } from "./api/workerApi";
+import { WorkerApi } from "../chss-shared/workerApi/workerApi";
 import { Config } from "./helpers/types";
 
 declare global {

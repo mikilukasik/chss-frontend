@@ -1,4 +1,4 @@
-import { WorkerApi } from "../../api/workerApi";
+import { WorkerApi } from "../../../chss-shared/workerApi/workerApi";
 import { addGetAiMovedFenHandler } from "./addGetAiMovedFenHandler";
 import { addGetMovedFenHandler } from "./addGetMovedFenHandler";
 import { addGetNextMovesHandler } from "./addGetNextMovesHandler";

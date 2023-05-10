@@ -1,4 +1,4 @@
-import { WorkerApi } from "../../api/workerApi";
+import { WorkerApi } from "../../../chss-shared/workerApi/workerApi";
 import { fen2intArray } from "../../../chss-module-engine/src/engine_new/transformers/fen2intArray";
 import { move2moveString } from "../../../chss-module-engine/src/engine_new/transformers/move2moveString";
 import { generateLegalMoves } from "../../../chss-module-engine/src/engine_new/moveGenerators/generateLegalMoves";
