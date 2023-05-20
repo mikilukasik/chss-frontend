@@ -23,6 +23,13 @@ const defaultEngineConfig = {
   winnerScoreRario: 0.4,
 };
 
+// const defaultEngineConfig = {
+//   depth: 0,
+//   moveSorters: [{ cutoff: 0.01 }],
+//   moveScoreRario: 1,
+//   winnerScoreRario: 0,
+// };
+
 const lastRememberedState = localStorage.getItem("chessBoardState");
 if (!lastRememberedState) setTimeout(newGame, 0);
 

@@ -15,7 +15,7 @@ export const init = ({ config: envConfig }: { config: Config }) => {
   Object.assign(config, envConfig);
 
   const mainWorker = new Worker({ workerOptions: { config } });
-  const workerHostApi = new WorkerApi(mainWorker);
+  const workerHostApi = new WorkerApi({ worker: mainWorker });
 
   window.CHSS = Object.assign(window.CHSS || {}, { mainWorker: workerHostApi });
 
