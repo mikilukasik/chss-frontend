@@ -17,10 +17,10 @@ declare global {
 }
 
 const defaultEngineConfig = {
-  depth: 5,
+  timeout: 3000,
   moveSorters: [{ cutoff: 0.01 }],
-  moveScoreRario: 0.92,
-  winnerScoreRario: 0.4,
+  moveScoreRario: 2, //0.92,
+  // winnerScoreRario: 0.4,
 };
 
 // const defaultEngineConfig = {
