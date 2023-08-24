@@ -18,8 +18,12 @@
   border: 1px solid silver;
 }
 
-.engine-config-input-container {
-  padding: 10px 5px;
+.right-panel-input-container {
+  padding: 0 5px;
+}
+
+.right-panel-button-container {
+  padding: 5px 5px 10px 5px;
 }
 
 @media (min-width: 1040px) {

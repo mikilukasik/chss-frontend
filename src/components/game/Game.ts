@@ -1,6 +1,12 @@
-import { component, handler, html } from "../../../litState/src";
+import { batchUpdate, component, handler, html } from "../../../litState/src";
+import {
+  engineProfileNames,
+  engineProfiles,
+} from "../../helpers/constants/engineProfiles";
+import { Button } from "../button/Button";
 import { Chessboard } from "../chessboard/Chessboard";
 import { chessboardState } from "../chessboard/helpers/chessboardState";
+import { Dropdown } from "../dropdown/Dropdown";
 import { Input } from "../input/Input";
 import "./game.scss";
 
@@ -13,10 +19,31 @@ export const Game = component(
     <div class="game-wrapper">
       <div class="chessboard-wrapper">${Chessboard()}</div>
       <div class="right-panel">
-        <button onclick="${rotateBoardHandler}">rotate</button>
-        <div class="engine-config-input-container">
+        <div class="right-panel-button-container">
+          ${Button({
+            buttonProps: { onclick: rotateBoardHandler },
+            children: "rotate",
+          })}
+        </div>
+
+        <div class="right-panel-input-container">
+          ${Dropdown({
+            label: "Engine profile",
+            onchange: (newEngineProfile: string) => {
+              batchUpdate(() => {
+                chessboardState.engineProfile = newEngineProfile;
+                chessboardState.engineConfig = engineProfiles[newEngineProfile];
+              });
+            },
+            options: engineProfileNames,
+            value: chessboardState.engineProfile,
+            inverted: true,
+          })}
+        </div>
+
+        <div class="right-panel-input-container">
           ${Input({
-            inputId: "engine-config-input",
+            inputId: "right-panel-input",
             label: "Engine config",
             value: JSON.stringify(chessboardState.engineConfig),
             onchange: (val: string) =>

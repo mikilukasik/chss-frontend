@@ -9,26 +9,16 @@ import { addMove } from "../../../helpers/gameHelpers/addMove";
 import { newGame } from "../../../helpers/gameHelpers/newGame";
 import { animateBoardChanges } from "./animateBoardChanges";
 import { processCompletedGame } from "../../../helpers/gameHelpers/processCompletedGame";
+import {
+  defaultEngineProfile,
+  engineProfiles,
+} from "../../../helpers/constants/engineProfiles";
 
 declare global {
   interface Window {
     CHSS: any;
   }
 }
-
-const defaultEngineConfig = {
-  timeout: 3000,
-  moveSorters: [{ cutoff: 0.01 }],
-  moveScoreRario: 2, //0.92,
-  // winnerScoreRario: 0.4,
-};
-
-// const defaultEngineConfig = {
-//   depth: 0,
-//   moveSorters: [{ cutoff: 0.01 }],
-//   moveScoreRario: 1,
-//   winnerScoreRario: 0,
-// };
 
 const lastRememberedState = localStorage.getItem("chessBoardState");
 if (!lastRememberedState) setTimeout(newGame, 0);
@@ -81,7 +71,8 @@ export const chessboardState = createState({
     fen: string,
     options?: { dontAnimateMove?: boolean }
   ) => void,
-  engineConfig: defaultEngineConfig,
+  engineProfile: defaultEngineProfile,
+  engineConfig: engineProfiles[defaultEngineProfile],
 });
 
 chessboardState.makeMove = async (

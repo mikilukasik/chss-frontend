@@ -1,6 +1,12 @@
 import "./input.scss";
 
-import { component, createState, handler, html } from "../../../litState/src";
+import {
+  batchUpdate,
+  component,
+  createState,
+  handler,
+  html,
+} from "../../../litState/src";
 import { ErrorMessage } from "../errorMessage/ErrorMessage";
 
 export const Input = component(
@@ -14,7 +20,14 @@ export const Input = component(
     error,
     inverted,
   }) => {
-    const localState = createState({ value });
+    const localState = createState({ value, prevIncomingValue: value });
+
+    if (value !== localState.prevIncomingValue && value !== localState.value) {
+      batchUpdate(() => {
+        localState.value = value;
+        localState.prevIncomingValue = value;
+      });
+    }
 
     const onchangeHandler = handler((e: Event) => {
       localState.value = (e.target as HTMLInputElement).value;
