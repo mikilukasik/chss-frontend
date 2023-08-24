@@ -30,11 +30,12 @@ export const addStatusMessage = ({
         const item = statusMessagesState.messages.find((m) => m.id === id);
         if (item) item.show = false;
 
+        // removal from messages array is delayed so the item is allowed to slide out before disappearing
         setTimeout(() => {
           statusMessagesState.messages = statusMessagesState.messages.filter(
-            (msg) => msg !== item
+            (msg) => msg.id !== id
           );
-        }, 300);
+        }, 150);
       }, ttl);
     }
   }, 1);
