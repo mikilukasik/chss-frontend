@@ -17,30 +17,34 @@ export const Accordion = component(({ items = [] as Item[] }) => {
 
   return html`
     <div class="accordion">
-      ${items.map(
-        (item: Item, index: number) => html`
-          <div class="accordion-item">
-            <button
-              class="accordion-header"
-              onclick="${handler(() => toggleItem(index))}"
-            >
-              ${item.header}
-              <span
-                class="chevron${localState.openedItems[index]
-                  ? " rotated"
+      ${items
+        .map(
+          (item: Item, index: number) => html`
+            <div class="accordion-item">
+              <button
+                class="accordion-header${localState.openedItems[index]
+                  ? " active"
                   : ""}"
-              ></span>
-            </button>
-            <div
-              class="accordion-content${localState.openedItems[index]
-                ? " active"
-                : ""}"
-            >
-              ${item.content}
+                onclick="${handler(() => toggleItem(index))}"
+              >
+                ${item.header}
+                <span
+                  class="chevron${localState.openedItems[index]
+                    ? " rotated"
+                    : ""}"
+                ></span>
+              </button>
+              <div
+                class="accordion-content${localState.openedItems[index]
+                  ? " active"
+                  : ""}"
+              >
+                ${item.content}
+              </div>
             </div>
-          </div>
-        `
-      )}
+          `
+        )
+        .join("")}
     </div>
   `;
 });
