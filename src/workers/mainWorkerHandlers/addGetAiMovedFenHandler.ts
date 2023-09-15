@@ -34,7 +34,7 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
 
       const dbUpdate = await getDbUpdate();
 
-      const { winningMoveString, updateResult, moveUpdateId } = await (
+      const apiResponse = await (
         await fetch(self.CHSS_config.urls.lambdaAi, {
           method: "POST",
           headers: {
@@ -56,6 +56,8 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
         })
       ).json();
 
+      const { winningMoveString, updateResult, moveUpdateId } = apiResponse;
+
       clearTimeout(holdingMessageTimeout);
       if (holdingMessageId) api.do("removeStatusMessage", holdingMessageId);
 
@@ -71,6 +73,7 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
       const movedFen = board2fen(movedBoard);
 
       return {
+        apiResponse,
         fen: movedFen,
         lmf: movedLmf,
         lmt: movedLmt,

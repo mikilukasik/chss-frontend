@@ -73,6 +73,7 @@ export const chessboardState = createState({
   ) => void,
   engineProfile: defaultEngineProfile,
   engineConfig: engineProfiles[defaultEngineProfile],
+  apiResponse: null as Record<string, any> | null,
 });
 
 chessboardState.makeMove = async (
@@ -141,7 +142,13 @@ const makeComputerMove = () => {
           }).then(() => result)
       )
       .then(
-        (result: { fen: string; lmf: number[]; lmt: number[]; move: number }) =>
+        (result: {
+          fen: string;
+          lmf: number[];
+          lmt: number[];
+          move: number;
+          apiResponse: any;
+        }) =>
           batchUpdate(() => {
             Object.assign(chessboardState, result);
             chessboardState.moveIndex += 1;

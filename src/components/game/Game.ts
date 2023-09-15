@@ -57,30 +57,8 @@ export const Game = component(
                 `,
               },
               {
-                header: "LAST MOVE STATS",
-                content: html`
-                  ${Dropdown({
-                    label: "Engine profile",
-                    onchange: (newEngineProfile: string) => {
-                      batchUpdate(() => {
-                        chessboardState.engineProfile = newEngineProfile;
-                        chessboardState.engineConfig =
-                          engineProfiles[newEngineProfile];
-                      });
-                    },
-                    options: engineProfileNames,
-                    value: chessboardState.engineProfile,
-                    inverted: true,
-                  })}
-                  ${Input({
-                    inputId: "right-panel-input",
-                    label: "Engine config",
-                    value: JSON.stringify(chessboardState.engineConfig),
-                    onchange: (val: string) =>
-                      (chessboardState.engineConfig = JSON.parse(val)),
-                    inverted: true,
-                  })}
-                `,
+                header: "LAST MOVE API RESPONSE",
+                content: html` <pre>${JSON.stringify(chessboardState.apiResponse, null, 2)}</pre> `, // prettier-ignore
               },
             ],
           })}
