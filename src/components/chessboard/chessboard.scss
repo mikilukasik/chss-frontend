@@ -1,6 +1,6 @@
 $margin: 0px;
 
-.board {
+.main-board {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-gap: 0;
@@ -16,7 +16,7 @@ $margin: 0px;
   }
 }
 
-.board-container {
+.main-board-container {
   display: block;
   width: calc(100vw - #{$margin}); // Set width based on viewport width minus some margin
   height: calc(100vh - #{$margin}); // Set height based on viewport height minus some margin

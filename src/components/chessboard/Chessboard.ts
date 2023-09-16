@@ -15,7 +15,7 @@ export const Chessboard = component(
         boardContent += BoardCell({
           index: cellIndex,
           char,
-          id: `board-cell-${cellIndex}`,
+          id: `main-board-cell-${cellIndex}`,
         });
         cellIndex += 1;
         continue;
@@ -24,7 +24,7 @@ export const Chessboard = component(
       for (let j = 0; j < parseInt(char); j++) {
         boardContent += BoardCell({
           index: cellIndex,
-          id: `board-cell-${cellIndex}`,
+          id: `main-board-cell-${cellIndex}`,
         });
         cellIndex += 1;
       }
@@ -37,6 +37,6 @@ export const Chessboard = component(
     </div>`;
   },
   {
-    class: "board-container",
+    class: "main-board-container",
   }
 );
