@@ -109,7 +109,7 @@ export const BoardCell = component(
     const cellStr = cellIndex2cellStr(index);
 
     return html`<div
-      id="data-main-board-square-${cellStr}"
+      id="main-board-square-${cellStr}"
       onmousedown="CHSS.handlers.cellMouseDownHandler('${cellStr}')"
       onclick="CHSS.handlers.cellClickHandler('${cellStr}')"
       ondragstart="CHSS.handlers.cellDragStartHandler('${cellStr}', event)"

@@ -112,7 +112,7 @@ export const animateBoardChanges = async (
     promotedPieceElement.style.zIndex = "1";
 
     const container = document.getElementById(
-      `board-square-${from}`
+      `main-board-square-${from}`
     ) as HTMLElement;
 
     container.appendChild(promotedPieceElement);
@@ -140,7 +140,7 @@ export const animateBoardChanges = async (
     pieceElement.style.transform = "scale(0)";
 
     const container = document.getElementById(
-      `board-square-${square}`
+      `main-board-square-${square}`
     ) as HTMLElement;
 
     container.appendChild(pieceElement);
