@@ -31,7 +31,7 @@ export const Chessboard = component(
     }
 
     return html`<div
-      class="board${chessboardState.rotated ? " upside-down" : ""}"
+      class="main-board${chessboardState.rotated ? " upside-down" : ""}"
     >
       ${boardContent}
     </div>`;

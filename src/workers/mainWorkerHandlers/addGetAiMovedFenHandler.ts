@@ -73,7 +73,7 @@ export const addGetAiMovedFenHandler = (api: WorkerApi) =>
       const movedFen = board2fen(movedBoard);
 
       return {
-        apiResponse,
+        apiResponse: { ...apiResponse, fen },
         fen: movedFen,
         lmf: movedLmf,
         lmt: movedLmt,

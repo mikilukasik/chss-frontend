@@ -8,12 +8,25 @@ import { Button } from "../button/Button";
 import { Chessboard } from "../chessboard/Chessboard";
 import { chessboardState } from "../chessboard/helpers/chessboardState";
 import { Dropdown } from "../dropdown/Dropdown";
+import { GameStateModal } from "../gameStateModal/GameStateModal";
 import { Input } from "../input/Input";
+import { renderModal } from "../modal/Modal";
 import "./game.scss";
 
 const rotateBoardHandler = handler(
   () => (chessboardState.rotated = !chessboardState.rotated)
 );
+
+const displayResponseHandler = handler(async () => {
+  await renderModal(
+    (resolve) =>
+      GameStateModal({
+        resolve,
+        ...chessboardState.apiResponse,
+      }),
+    { allowClose: true }
+  );
+});
 
 export const Game = component(
   () => html`
@@ -58,7 +71,9 @@ export const Game = component(
               },
               {
                 header: "LAST MOVE API RESPONSE",
-                content: html` <pre>${JSON.stringify(chessboardState.apiResponse, null, 2)}</pre> `, // prettier-ignore
+                content: html`
+                  <div>${Button({ buttonProps: { onclick: displayResponseHandler }, children: 'Display' })}</div>
+                  <pre>${JSON.stringify(chessboardState.apiResponse, null, 2)}</pre>`, // prettier-ignore
               },
             ],
           })}

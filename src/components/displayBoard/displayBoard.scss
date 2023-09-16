@@ -1,0 +1,28 @@
+$margin: 0px;
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-gap: 0;
+  width: 100%;
+  padding-bottom: 100%;
+  position: relative; // For absolute positioning of .square-wrapper elements
+  transition: transform 0.75s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  
+  &.upside-down{
+    transform: rotate(180deg);
+  }
+}
+
+.board-container {
+  display: block;
+  width: calc(100vw - #{$margin}); // Set width based on viewport width minus some margin
+  height: calc(100vh - #{$margin}); // Set height based on viewport height minus some margin
+  max-width: calc(min(100vw, 100vh - 50px) - #{$margin}); // Set max-width based on smaller value of viewport width and height minus margin
+  max-height: calc(min(100vw, 100vh - 50px) - #{$margin}); // Set max-height based on smaller value of viewport width and height minus margin
+  position: relative; // For absolute positioning of .board
+  overflow: hidden; // Hide content outside the container
+}
+

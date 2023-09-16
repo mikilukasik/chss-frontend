@@ -29,7 +29,7 @@ export const animateBoardChanges = async (
   seconds: number = 0.5,
   moveToNotAnimate: string | null = null
 ): Promise<void> => {
-  const board = document.querySelector(".board");
+  const board = document.querySelector(".main-board");
   if (!board) return;
 
   const {
@@ -47,7 +47,7 @@ export const animateBoardChanges = async (
   // Animate removed pieces
   removedPieces.forEach(({ square }) => {
     const piece = board.querySelector(
-      `[data-square="${square}"]`
+      `[data-main-board-square="${square}"]`
     ) as HTMLElement;
 
     piece.style.transition = `transform ${seconds}s ease-out`;
@@ -59,7 +59,7 @@ export const animateBoardChanges = async (
   // Animate moved pieces
   movedPieces.forEach(({ piece, from, to }) => {
     const pieceElement = board.querySelector(
-      `[data-square="${from}"]`
+      `[data-main-board-square="${from}"]`
     ) as HTMLElement;
     const translation = getTranslationValues(from, to);
 
@@ -85,7 +85,7 @@ export const animateBoardChanges = async (
     const { piece, from, to } = promotionMove;
 
     const pawnElement = board.querySelector(
-      `[data-square="${from}"]`
+      `[data-main-board-square="${from}"]`
     ) as HTMLElement;
     const translation = getTranslationValues(from, to);
 

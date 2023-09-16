@@ -100,7 +100,7 @@ export const BoardCellContent = component(
     class: `cell-svg-container${
       chessboardState.selectedCell === cellStr ? " selected" : ""
     }${chessboardState.targetCells[cellStr as string] ? " highlighted" : ""}`,
-    "data-square": cellStr,
+    "data-main-board-square": cellStr,
   })
 );
 
@@ -109,7 +109,7 @@ export const BoardCell = component(
     const cellStr = cellIndex2cellStr(index);
 
     return html`<div
-      id="board-square-${cellStr}"
+      id="data-main-board-square-${cellStr}"
       onmousedown="CHSS.handlers.cellMouseDownHandler('${cellStr}')"
       onclick="CHSS.handlers.cellClickHandler('${cellStr}')"
       ondragstart="CHSS.handlers.cellDragStartHandler('${cellStr}', event)"
