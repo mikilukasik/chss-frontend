@@ -2,9 +2,11 @@ import "./displayBoard.scss";
 
 import { component, html } from "../../../litState/src";
 import { DisplayBoardCell } from "../displayBoardCell/DisplayBoardCell";
+import { BoardArrows } from "../boardArrows/BoardArrows";
+import { cellIndex2cellStr } from "../../../chss-module-engine/src/engine_new/transformers/moveString2move";
 
 export const DisplayBoard = component(
-  ({ id, fen, rotated }) => {
+  ({ id, fen, rotated, moves }) => {
     const pureFen = fen.split(" ")[0].split("/").join("");
     let boardContent = "";
 
@@ -29,9 +31,17 @@ export const DisplayBoard = component(
       }
     }
 
-    return html`<div class="board${rotated ? " upside-down" : ""}">
-      ${boardContent}
-    </div>`;
+    const getCell = (cellIndex: number) => {
+      const cellStr = cellIndex2cellStr(cellIndex);
+      return document.getElementById(
+        `displayboard-square-displayBoard-${id}-cell-${cellIndex}-${cellStr}`
+      )?.parentElement;
+    };
+
+    return html`
+      ${BoardArrows({ moves, getCell })}
+      <div class="board${rotated ? " upside-down" : ""}">${boardContent}</div>
+    `;
   },
   {
     class: "board-container",
