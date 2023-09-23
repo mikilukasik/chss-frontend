@@ -48,21 +48,19 @@ export const BoardArrows = component(
       const angle = Math.atan2(endY - startY, endX - startX);
       const length = Math.sqrt((endY - startY) ** 2 + (endX - startX) ** 2);
 
+      // calculate adjusted endpoints for the main arrow line (without the head)
+      const endXAdjusted = endX - lineWidth * 2 * Math.cos(angle);
+      const endYAdjusted = endY - lineWidth * 2 * Math.sin(angle);
+
       // draw arrow line
       context.beginPath();
       context.moveTo(startX, startY);
-      context.lineTo(endX, endY);
+      context.lineTo(endXAdjusted, endYAdjusted);
       context.stroke();
-
-      // calculate x and y components of offset based on arrow direction
-      const offsetX = 2 * lineWidth * Math.cos(angle);
-      const offsetY = 2 * lineWidth * Math.sin(angle);
-
-      context.fillStyle = `rgba(${color}, ${opacity})`;
 
       // draw arrow head
       context.save();
-      context.translate(endX + offsetX, endY + offsetY);
+      context.translate(endX, endY);
       context.rotate(angle);
       context.beginPath();
       context.moveTo(0, 0);
