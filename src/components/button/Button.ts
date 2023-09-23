@@ -6,7 +6,9 @@ export const Button = component(({ buttonProps = {}, children }) => {
     <div class="button-container">
       <button
         ${Object.keys(buttonProps)
-          .map((key) => `${key}="${buttonProps[key]}"`)
+          .map((key) =>
+            buttonProps[key] ? `${key}="${buttonProps[key]}"` : ""
+          )
           .join(" ")}
       >
         ${children}

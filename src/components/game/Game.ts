@@ -72,7 +72,7 @@ export const Game = component(
               {
                 header: "LAST MOVE API RESPONSE",
                 content: html`
-                  <div>${Button({ buttonProps: { onclick: displayResponseHandler }, children: 'Display' })}</div>
+                  <div>${Button({ buttonProps: { onclick: displayResponseHandler, disabled: !chessboardState.apiResponse }, children: 'Display' })}</div>
                   <pre>${JSON.stringify(chessboardState.apiResponse, null, 2)}</pre>`, // prettier-ignore
               },
             ],
