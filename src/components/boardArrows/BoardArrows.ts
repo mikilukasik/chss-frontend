@@ -25,7 +25,8 @@ export const BoardArrows = component(
       endX: number,
       endY: number,
       color: string,
-      opacity: number
+      opacity: number,
+      score: number
     ) => {
       const canvas = document.getElementById(
         `chessboard-canvas-${id}`
@@ -39,16 +40,12 @@ export const BoardArrows = component(
       const lineWidth = 20 * opacity;
 
       context.strokeStyle = color;
-      context.fillStyle = color; // set fill color to match stroke color
+      context.fillStyle = color;
       context.lineWidth = lineWidth;
-
       context.globalAlpha = opacity;
 
-      // calculate arrow angle and length
       const angle = Math.atan2(endY - startY, endX - startX);
-      const length = Math.sqrt((endY - startY) ** 2 + (endX - startX) ** 2);
 
-      // calculate adjusted endpoints for the main arrow line (without the head)
       const endXAdjusted = endX - lineWidth * 2 * Math.cos(angle);
       const endYAdjusted = endY - lineWidth * 2 * Math.sin(angle);
 
@@ -68,6 +65,28 @@ export const BoardArrows = component(
       context.lineTo(-lineWidth * 2, lineWidth * 2);
       context.closePath();
       context.fill();
+      context.restore();
+
+      // Calculate midpoint for score and adjust it slightly
+      const midpointX = (startX + endXAdjusted) / 2;
+      const midpointY = (startY + endYAdjusted) / 2;
+
+      // Set the score color to a contrasting one (white in this case)
+      context.fillStyle = "white";
+      context.strokeStyle = "black"; // Add a stroke to increase readability
+      context.lineWidth = 2; // Adjust based on preference
+
+      // Rotate text to align with the arrow line
+      context.save();
+      context.translate(midpointX, midpointY);
+      context.rotate(angle);
+
+      context.font = `${lineWidth}px Arial`;
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillText(score.toString(), 0, 0);
+      context.strokeText(score.toString(), 0, 0); // This will outline the text to make it more readable
+
       context.restore();
     };
 
@@ -98,7 +117,7 @@ export const BoardArrows = component(
         const endX = endCell.offsetLeft + endCell.offsetWidth / 2;
         const endY = endCell.offsetTop + endCell.offsetHeight / 2;
 
-        drawArrow(startX, startY, endX, endY, color, opacity);
+        drawArrow(startX, startY, endX, endY, color, opacity, move.score);
       }
     }, 0);
 
