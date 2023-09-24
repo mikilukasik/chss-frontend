@@ -84,11 +84,19 @@ export const BoardArrows = component(
       context.font = `${lineWidth}px Arial`;
       context.textAlign = "center";
       context.textBaseline = "middle";
-      context.fillText(score.toString(), 0, 0);
-      context.strokeText(score.toString(), 0, 0); // This will outline the text to make it more readable
+      context.fillText(score.toFixed(4), 0, 0);
+      context.strokeText(score.toFixed(4), 0, 0); // This will outline the text to make it more readable
 
       context.restore();
     };
+
+    const scoreSum = moves.reduce(
+      (
+        sum: number,
+        move: { move: number; moveString: string; score: number }
+      ) => sum + move.score,
+      0
+    );
 
     setTimeout(() => {
       clearCanvas();
@@ -107,7 +115,7 @@ export const BoardArrows = component(
         const startCell = getCell(move.move >>> 10);
         const endCell = getCell(move.move & 63);
 
-        const opacity = Math.max(0, Math.min(1, move.score));
+        const opacity = move.score / scoreSum;
         const color = `#00${Math.floor(opacity * 255)
           .toString(16)
           .padStart(2, "0")}00`;
